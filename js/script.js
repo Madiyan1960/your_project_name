@@ -191,40 +191,40 @@ function updateCartUI() {
 // Этот обработчик назначается ОДИН РАЗ при загрузке скрипта,
 // и он будет перехватывать все клики по кнопкам +/- внутри cartItemsContainer.
 // Диагностическая строка: попытка назначить обработчик
-console.log("Попытка назначить обработчик клика на cartItemsContainer (перед addEventListener):", cartItemsContainer); 
+//console.log("Попытка назначить обработчик клика на cartItemsContainer (перед addEventListener):", cartItemsContainer); 
 cartItemsContainer.addEventListener('click', (event) => {
     // Диагностическая строка: клик обнаружен
-    console.log("Клик обнаружен в cartItemsContainer. Цель клика (event.target):", event.target); 
+    //console.log("Клик обнаружен в cartItemsContainer. Цель клика (event.target):", event.target); 
 
     const target = event.target; 
 
     if (target.classList.contains('inc') || target.classList.contains('dec')) {
         // Диагностика: клик по кнопке +/-
-        console.log("Клик по кнопке +/-. ID:", target.dataset.id, "Класс кнопки:", target.classList.contains('inc') ? 'inc' : 'dec');
+        //console.log("Клик по кнопке +/-. ID:", target.dataset.id, "Класс кнопки:", target.classList.contains('inc') ? 'inc' : 'dec');
         // ИСПРАВЛЕНИЕ ЗДЕСЬ: УБРАЛИ parseInt()
         const id = target.dataset.id; // ID уже является строкой (UUID), не нужно его парсить в число
         const item = cart.find(c => c.id === id); 
 
         if (item) {
-            console.log("Товар найден в корзине:", item);
+            //console.log("Товар найден в корзине:", item);
             if (target.classList.contains('inc')) {
                 item.qty++;
-                console.log("Количество увеличено до:", item.qty);
+                //console.log("Количество увеличено до:", item.qty);
             } else if (target.classList.contains('dec')) {
                 item.qty--;
-                console.log("Количество уменьшено до:", item.qty);
+                //console.log("Количество уменьшено до:", item.qty);
                 if (item.qty <= 0) {
                     cart = cart.filter(c => c.id !== id); 
-                    console.log("Товар удален из корзины (количество <= 0).");
+                    //console.log("Товар удален из корзины (количество <= 0).");
                 }
             }
             updateCartUI(); 
-            console.log("updateCartUI() вызван после изменения количества.");
+            //console.log("updateCartUI() вызван после изменения количества.");
         } else {
-            console.warn("Предупреждение: Товар с ID", id, "не найден в корзине для изменения количества.");
+            //console.warn("Предупреждение: Товар с ID", id, "не найден в корзине для изменения количества.");
         }
     } else {
-        console.log("Клик не по кнопке +/-. Классы цели:", target.classList);
+        //console.log("Клик не по кнопке +/-. Классы цели:", target.classList);
     }
 });
 

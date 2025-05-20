@@ -184,7 +184,7 @@ function updateCartUI() {
 
     const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     totalDiv.textContent = `Итого: ${total} ₸`;
-    console.log("UI корзины обновлен. Текущее содержимое корзины:", cart); // Диагностика: UI обновлен
+    //console.log("UI корзины обновлен. Текущее содержимое корзины:", cart); // Диагностика: UI обновлен
 }
 
 // --- ЕДИНЫЙ ОБРАБОТЧИК СОБЫТИЙ ДЛЯ КОРЗИНЫ (Делегирование событий) ---

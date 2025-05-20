@@ -1,29 +1,22 @@
 {
-  "name": "Мой Магазин у Дома",
+  "name": "Магазин у дома",
   "short_name": "Магазин",
-  "description": "Онлайн-заказ свежих продуктов и товаров из вашего любимого магазина у дома. Быстро и удобно!",
-  "start_url": "/",
+  "start_url": "index.html?source=pwa"
+
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#007bff",
+  "background_color": "#f4f4f4",
+  "theme_color": "#2e7d32",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon-192x192.png", // Иконка теперь в корне
+      "src": "icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icon-512x512.png", // Иконка теперь в корне
+      "src": "icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
-    },
-    {
-      "src": "/maskable_icon.png", // Иконка теперь в корне
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
     }
-  ],
-  "orientation": "portrait",
-  "lang": "ru-RU"
+  ]
 }

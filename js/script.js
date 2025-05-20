@@ -10,7 +10,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const productsContainer = document.getElementById('products');
 const cartItemsContainer = document.getElementById('cartItems');
 // Диагностическая строка: проверяем, найден ли элемент корзины
-console.log("cartItemsContainer при инициализации:", cartItemsContainer); 
+//console.log("cartItemsContainer при инициализации:", cartItemsContainer); 
 const totalDiv = document.getElementById('total');
 const orderForm = document.getElementById('orderForm');
 const messageDiv = document.getElementById('message');
@@ -122,7 +122,7 @@ function addToCart(productId) {
     } else {
         cart.push({ ...product, qty: 1 });
     }
-    console.log("Товар добавлен в корзину:", cart); // Диагностика: состояние корзины
+    //console.log("Товар добавлен в корзину:", cart); // Диагностика: состояние корзины
     updateCartUI();
 }
 

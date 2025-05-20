@@ -40,8 +40,7 @@ h1 {
 
     .product-card {
         padding: 5px; /* Уменьшенный внутренний padding карточки */
-        /* max-height: 250px; /* Ограничиваем максимальную высоту карточки на средних экранах */
-        /* overflow: hidden; /* Обрезаем содержимое, если оно выходит за max-height */
+        /* УБИРАЕМ max-height И overflow: hidden; отсюда, чтобы не прятать кнопку */
     }
 
     .product-card img {
@@ -77,8 +76,8 @@ h1 {
 
     .product-card {
         padding: 3px; /* Максимально уменьшим внутренний padding карточки */
-        max-height: 200px; /* **Ограничиваем максимальную высоту карточки на очень маленьких экранах** */
-        overflow: hidden; /* **Обрезка содержимого, если оно выходит за max-height** */
+        /* УБИРАЕМ max-height И overflow: hidden; ОТСЮДА! */
+        /* height: 100%; /* Возвращаем height: 100% для выравнивания карточек в гриде */
     }
 
     .product-card img {
@@ -112,8 +111,9 @@ h1 {
     text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    /* Убрали height: 100%; из базовых стилей, чтобы дать больше контроля через max-height */
+    justify-content: space-between; /* ЭТО КЛЮЧЕВОЕ для прижатия кнопки вниз */
+    height: 100%; /* Важно, чтобы карточки занимали всю высоту в гриде для justify-content */
+    /* УБИРАЕМ overflow: hidden; отсюда, чтобы не обрезать кнопку */
 }
 
 /* --- Стили для изображения внутри карточки (.product-card img) --- */
@@ -124,6 +124,7 @@ h1 {
     display: block;
     margin: 0 auto 5px auto; /* Центрируем изображение и добавляем отступ снизу */
     border-radius: 4px;
+    /* height: auto; /* Убеждаемся, что высота подстраивается по aspect-ratio */
 }
 
 /* Стили для текста в карточке */
@@ -132,7 +133,7 @@ h1 {
     margin: 5px 0 3px 0; /* Базовые отступы для больших экранов */
     font-size: 1em;
     color: #333;
-    overflow: hidden;
+    overflow: hidden; /* Обрезаем текст, который выходит за 2 строки */
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2; /* Ограничиваем 2 строками */
@@ -154,7 +155,7 @@ button {
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.9em;
-    margin-top: auto; /* Прижимает кнопку к низу, если карточка flex */
+    margin-top: auto; /* ЭТО ПРИЖИМАЕТ КНОПКУ К НИЗУ КАРТОЧКИ */
 }
 
 button:hover {

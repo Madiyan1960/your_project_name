@@ -1,13 +1,16 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://kpefeonxvgnfpgevkcwy.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY4MDgsImV4cCI6MjA2MjgxMjgwOH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys
-'; // ОБНОВИТЕ ЭТОТ КЛЮЧ!
+// !!! ВНИМАНИЕ: ЭТОТ КЛЮЧ УСТАРЕЛ !!!
+// ОЧЕНЬ РЕКОМЕНДУЕТСЯ ЗАМЕНИТЬ ЕГО НА ВАШ АКТУАЛЬНЫЙ anon (public) KEY ИЗ ПАНЕЛИ SUPABASE
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY4MDgsImV4cCI6MjA2MjgxMjgwOH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const productsContainer = document.getElementById('products');
 const cartItemsContainer = document.getElementById('cartItems');
+// Диагностическая строка: проверяем, найден ли элемент корзины
+console.log("cartItemsContainer при инициализации:", cartItemsContainer); 
 const totalDiv = document.getElementById('total');
 const orderForm = document.getElementById('orderForm');
 const messageDiv = document.getElementById('message');
@@ -53,13 +56,15 @@ async function loadProducts() {
     productsContainer.textContent = 'Загрузка товаров...';
     const { data, error } = await supabase.from('products').select('id,name,price,image_url,unit,category'); 
     if (error) {
-        productsContainer.textContent = 'Ошибка загрузки товаров';
-        console.error(error);
+        productsContainer.textContent = 'Ошибка загрузки товаров: ' + error.message;
+        console.error("Ошибка Supabase:", error);
         return;
     }
     allProducts = data;
     populateCategories();
     applyFiltersAndSort();
+    // После загрузки товаров, если в корзине что-то было (например, из localStorage), обновим UI
+    updateCartUI(); 
 }
 
 // Заполнение выпадающего списка категорий
@@ -107,18 +112,26 @@ function renderProducts(productsToDisplay) {
 
 function addToCart(productId) {
     const product = allProducts.find(p => p.id === productId);
-    if (!product) return;
+    if (!product) {
+        console.error("Попытка добавить несуществующий продукт:", productId);
+        return;
+    }
     const item = cart.find(c => c.id === productId);
     if (item) {
         item.qty++;
     } else {
         cart.push({ ...product, qty: 1 });
     }
+    console.log("Товар добавлен в корзину:", cart); // Диагностика: состояние корзины
     updateCartUI();
 }
 
 function flyToCart(imgElement) {
     const cartIcon = document.querySelector('#cart-icon');
+    if (!cartIcon) {
+        console.warn("Элемент #cart-icon не найден для анимации.");
+        return;
+    }
     const imgClone = imgElement.cloneNode(true);
     const imgRect = imgElement.getBoundingClientRect();
     const cartRect = cartIcon.getBoundingClientRect();
@@ -128,13 +141,18 @@ function flyToCart(imgElement) {
     imgClone.style.left = imgRect.left + 'px';
     imgClone.style.top = imgRect.top + 'px';
     imgClone.style.width = imgRect.width + 'px';
+    imgClone.style.height = imgRect.height + 'px'; // Добавим высоту
     imgClone.style.transition = 'all 0.8s ease-in-out';
+    imgClone.style.borderRadius = '50%'; // Сделаем круглым
+    imgClone.style.objectFit = 'cover'; // Обрезка изображения
+
     document.body.appendChild(imgClone);
 
     requestAnimationFrame(() => {
         imgClone.style.left = cartRect.left + 'px';
         imgClone.style.top = cartRect.top + 'px';
         imgClone.style.width = '20px';
+        imgClone.style.height = '20px'; // И высоту
         imgClone.style.opacity = '0.5';
     });
 
@@ -146,7 +164,7 @@ function flyToCart(imgElement) {
 function updateCartUI() {
     if (cart.length === 0) {
         cartItemsContainer.textContent = 'Корзина пуста';
-        totalDiv.textContent = 'Итого: 0';
+        totalDiv.textContent = 'Итого: 0 ₸';
         return;
     }
     cartItemsContainer.innerHTML = '';
@@ -166,34 +184,46 @@ function updateCartUI() {
 
     const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     totalDiv.textContent = `Итого: ${total} ₸`;
-
-    // --- УДАЛЕНЫ СТАРЫЕ ОБРАБОТЧИКИ ВНУТРИ updateCartUI ---
-    // Это место, где раньше были .querySelectorAll('button.inc') и .dec.
-    // Их здесь больше нет, так как мы используем делегирование событий.
+    console.log("UI корзины обновлен. Текущее содержимое корзины:", cart); // Диагностика: UI обновлен
 }
 
 // --- ЕДИНЫЙ ОБРАБОТЧИК СОБЫТИЙ ДЛЯ КОРЗИНЫ (Делегирование событий) ---
 // Этот обработчик назначается ОДИН РАЗ при загрузке скрипта,
 // и он будет перехватывать все клики по кнопкам +/- внутри cartItemsContainer.
+// Диагностическая строка: попытка назначить обработчик
+console.log("Попытка назначить обработчик клика на cartItemsContainer (перед addEventListener):", cartItemsContainer); 
 cartItemsContainer.addEventListener('click', (event) => {
-    const target = event.target; // Элемент, на который был произведен клик
+    // Диагностическая строка: клик обнаружен
+    console.log("Клик обнаружен в cartItemsContainer. Цель клика (event.target):", event.target); 
 
-    // Проверяем, является ли целевой элемент кнопкой уменьшения или увеличения
+    const target = event.target; 
+
     if (target.classList.contains('inc') || target.classList.contains('dec')) {
-        const id = parseInt(target.dataset.id); // Получаем ID товара из data-id атрибута
-        const item = cart.find(c => c.id === id); // Находим товар в корзине
+        // Диагностика: клик по кнопке +/-
+        console.log("Клик по кнопке +/-. ID:", target.dataset.id, "Класс кнопки:", target.classList.contains('inc') ? 'inc' : 'dec');
+        const id = parseInt(target.dataset.id); 
+        const item = cart.find(c => c.id === id); 
 
         if (item) {
+            console.log("Товар найден в корзине:", item);
             if (target.classList.contains('inc')) {
                 item.qty++;
+                console.log("Количество увеличено до:", item.qty);
             } else if (target.classList.contains('dec')) {
                 item.qty--;
+                console.log("Количество уменьшено до:", item.qty);
                 if (item.qty <= 0) {
-                    cart = cart.filter(c => c.id !== id); // Удаляем товар, если количество 0 или меньше
+                    cart = cart.filter(c => c.id !== id); 
+                    console.log("Товар удален из корзины (количество <= 0).");
                 }
             }
-            updateCartUI(); // Обновляем UI корзины
+            updateCartUI(); 
+            console.log("updateCartUI() вызван после изменения количества.");
+        } else {
+            console.warn("Предупреждение: Товар с ID", id, "не найден в корзине для изменения количества.");
         }
+    } else {
+        console.log("Клик не по кнопке +/-. Классы цели:", target.classList);
     }
 });
 
@@ -227,6 +257,7 @@ orderForm.onsubmit = async e => {
     if (error) {
         messageDiv.style.color = 'red';
         messageDiv.textContent = 'Ошибка при отправке заказа: ' + error.message;
+        console.error("Ошибка при отправке заказа в Supabase:", error);
     } else {
         messageDiv.style.color = 'green';
         messageDiv.textContent = 'Заказ успешно отправлен! Спасибо.';
@@ -289,7 +320,6 @@ categorySelect.addEventListener('change', applyFiltersAndSort);
 
 // Инициализация: загружаем товары и обновляем UI
 loadProducts();
-// updateCartUI(); // Этот вызов уже не нужен здесь, так как корзина будет обновляться после loadProducts()
 
 // Регистрация Service Worker
 if ('serviceWorker' in navigator) {

@@ -1,12 +1,14 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://kpefeonxvgnfpgevkcwy.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY4MDgsImV4cCI6MjA2MjgxMjgwOH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys'; // ОБНОВИТЕ ЭТОТ КЛЮЧ!
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwic3VwYWJhc2VfaW5zdGFuY2Vfa2V5Ijoibm9uZXhpc3RlbnQiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjoxODAwMDAwMDAwMH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys'; // ОБНОВИТЕ ЭТОТ КЛЮЧ!
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const productsContainer = document.getElementById('products');
 const cartItemsContainer = document.getElementById('cartItems');
+// ДОБАВЛЕННАЯ ДИАГНОСТИЧЕСКАЯ СТРОКА
+console.log("Значение cartItemsContainer:", cartItemsContainer); 
 const totalDiv = document.getElementById('total');
 const orderForm = document.getElementById('orderForm');
 const messageDiv = document.getElementById('message');
@@ -165,22 +167,22 @@ function updateCartUI() {
 
     const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     totalDiv.textContent = `Итого: ${total} ₸`;
-
-    // --- УДАЛЕНЫ СТАРЫЕ ОБРАБОТЧИКИ ВНУТРИ updateCartUI ---
-    // Это место, где раньше были .querySelectorAll('button.inc') и .dec.
-    // Их здесь больше нет, так как мы используем делегирование событий.
 }
 
 // --- ЕДИНЫЙ ОБРАБОТЧИК СОБЫТИЙ ДЛЯ КОРЗИНЫ (Делегирование событий) ---
 // Этот обработчик назначается ОДИН РАЗ при загрузке скрипта,
 // и он будет перехватывать все клики по кнопкам +/- внутри cartItemsContainer.
+// ДОБАВЛЕННАЯ ДИАГНОСТИЧЕСКАЯ СТРОКА
+console.log("Попытка назначить обработчик клика на cartItemsContainer:", cartItemsContainer); 
 cartItemsContainer.addEventListener('click', (event) => {
-    const target = event.target; // Элемент, на который был произведен клик
+    // ДОБАВЛЕННАЯ ДИАГНОСТИЧЕСКАЯ СТРОКА
+    console.log("Клик обнаружен в cartItemsContainer. Цель клика:", event.target); 
 
-    // Проверяем, является ли целевой элемент кнопкой уменьшения или увеличения
+    const target = event.target; 
+
     if (target.classList.contains('inc') || target.classList.contains('dec')) {
-        const id = parseInt(target.dataset.id); // Получаем ID товара из data-id атрибута
-        const item = cart.find(c => c.id === id); // Находим товар в корзине
+        const id = parseInt(target.dataset.id); 
+        const item = cart.find(c => c.id === id); 
 
         if (item) {
             if (target.classList.contains('inc')) {
@@ -188,10 +190,10 @@ cartItemsContainer.addEventListener('click', (event) => {
             } else if (target.classList.contains('dec')) {
                 item.qty--;
                 if (item.qty <= 0) {
-                    cart = cart.filter(c => c.id !== id); // Удаляем товар, если количество 0 или меньше
+                    cart = cart.filter(c => c.id !== id); 
                 }
             }
-            updateCartUI(); // Обновляем UI корзины
+            updateCartUI(); 
         }
     }
 });
@@ -288,7 +290,6 @@ categorySelect.addEventListener('change', applyFiltersAndSort);
 
 // Инициализация: загружаем товары и обновляем UI
 loadProducts();
-// updateCartUI(); // Этот вызов уже не нужен здесь, так как корзина будет обновляться после loadProducts()
 
 // Регистрация Service Worker
 if ('serviceWorker' in navigator) {

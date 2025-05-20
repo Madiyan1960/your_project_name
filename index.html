@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Магазин на Supabase</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#2a9d8f" />
+    <link rel="icon" href="icon-192.png" />
 
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <h3 class="shop-title">«Меруерт»</h3>
+
+    <div id="products">Загрузка товаров...</div>
+
+    <button id="cart-toggle" title="Открыть/закрыть корзину">
+        <img id="cart-icon" src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Корзина" />
+        <span id="cart-text">Корзина</span>
+    </button>
+
+    <div id="cart">
+        <h2>Корзина</h2>
+        <div id="cartItems">Корзина пуста</div>
+        <div id="total">Итого: 0</div>
+        <form id="orderForm">
+            <input type="text" id="name" placeholder="Имя" required />
+            <input type="tel" id="phone" placeholder="Телефон" required pattern="^\+?\d{10,15}$" title="Введите корректный номер телефона" />
+            <input id="address" type="text" placeholder="Адрес проживания" required autocomplete="on" />
+            <button type="submit">Отправить заказ</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script src="js/script.js" type="module"></script>
+
+</body>
+</html>

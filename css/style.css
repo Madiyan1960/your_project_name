@@ -17,52 +17,39 @@ h1 {
     margin: 5px 0;
 }
 
-/* --- Стили для контейнера карточек (используем #products) --- */
+/* --- Контейнер для карточек: ID #products --- */
 #products {
     display: grid;
-    /* Базовое расположение: 3 колонки для больших экранов */
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 15px; /* Уменьшаем отступ для более плотной сетки */
-    max-width: 900px; /* Ограничиваем максимальную ширину для центрирования */
-    margin: 0 auto; /* Центрируем контейнер */
+    /* ОДИН И ЕДИНСТВЕННЫЙ grid-template-columns для ВСЕХ экранов */
+    /* repeat(auto-fill, minmax(100px, 1fr)) будет пытаться создать 3 колонки, */
+    /* если каждая из них может быть минимум 100px шириной. */
+    /* Это значение можно настроить, чтобы карточки не были слишком узкими. */
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* 100px - минимальная ширина карточки */
+    gap: 10px; /* Уменьшаем отступ для более плотной сетки на мобильных */
+    max-width: 900px; /* Максимальная ширина контейнера */
+    margin: 0 auto; /* Центрирование контейнера */
     padding: 10px;
 }
-
-/* Медиа-запросы для контейнера #products */
-@media (max-width: 768px) {
-    #products {
-        grid-template-columns: repeat(2, 1fr); /* 2 колонки на планшетах */
-        gap: 10px; /* Немного уменьшаем отступ */
-    }
-}
-
-@media (max-width: 480px) {
-    #products {
-        grid-template-columns: 1fr; /* 1 колонка на мобильных устройствах */
-        gap: 10px;
-    }
-}
-
 
 /* --- Стили для каждой отдельной карточки (.product-card) --- */
 .product-card {
     border: 1px solid #ddd;
-    border-radius: 8px; /* Немного увеличим скругление */
+    border-radius: 8px;
     padding: 8px;
     background: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Легкая тень */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     text-align: center;
-    display: flex; /* Используем flexbox для внутреннего выравнивания контента */
+    display: flex; /* Делаем карточку flex-контейнером */
     flex-direction: column; /* Элементы идут сверху вниз */
     justify-content: space-between; /* Распределяем контент по высоте */
-    height: 100%; /* Карточки будут занимать всю доступную высоту в гриде */
+    height: 100%; /* Карточка занимает всю доступную высоту в гриде */
 }
 
 /* --- Стили для изображения внутри карточки (.product-card img) --- */
 .product-card img {
-    width: 100%; /* Изображение занимает всю ширину */
+    width: 100%; /* Изображение занимает всю ширину карточки */
     aspect-ratio: 1 / 1; /* ГЛАВНОЕ: ДЕЛАЕМ ИЗОБРАЖЕНИЕ КВАДРАТНЫМ */
-    object-fit: cover; /* Изображение будет обрезано, чтобы полностью покрыть квадрат */
+    object-fit: cover; /* Изображение будет обрезано, чтобы полностью покрыть квадрат. Идеально для квадратных картинок. */
     display: block; /* Убирает лишний пробел */
     margin-bottom: 5px; /* Небольшой отступ от изображения до текста */
     border-radius: 4px; /* Легкое скругление углов изображения */
@@ -72,25 +59,25 @@ h1 {
 .product-name {
     font-weight: bold;
     margin: 5px 0 3px 0;
-    font-size: 1em; /* Регулируем размер шрифта */
+    font-size: 0.9em; /* Уменьшим размер шрифта, чтобы помещался на узких карточках */
     color: #333;
 }
 
 .product-price {
     color: #555;
     margin-bottom: 5px;
-    font-size: 0.9em; /* Регулируем размер шрифта */
+    font-size: 0.8em; /* Уменьшим размер шрифта */
 }
 
 button {
     background: #2a9d8f;
     color: white;
     border: none;
-    padding: 6px 10px;
+    padding: 5px 8px; /* Уменьшим padding кнопки */
     border-radius: 4px;
     cursor: pointer;
-    font-size: 0.9em; /* Регулируем размер шрифта кнопки */
-    margin-top: auto; /* Прижимает кнопку к низу, если карточка flex */
+    font-size: 0.8em; /* Уменьшим размер шрифта кнопки */
+    margin-top: auto;
 }
 
 button:hover {
@@ -112,7 +99,7 @@ button:hover {
     border: none;
     gap: 4px;
     z-index: 1001;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Добавим тень */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 #cart-toggle img {
@@ -126,14 +113,6 @@ button:hover {
     color: black;
     font-weight: bold;
 }
-
-/* #cart-toggle (дублирование, можно удалить) */
-/* #cart-toggle {
-    background: #ffeb3b;
-    border-radius: 8px;
-    padding: 3px;
-} */
-
 
 #cart {
     width: 90vw;
@@ -209,7 +188,7 @@ button:hover {
     margin-top: 8px;
 }
 
-h3 {
+h3 { /* Этот стиль H3 может быть конфликтным, если он не для заголовков карточек */
     text-align: left;
     margin-top: 5px;
     font-size: 24px;

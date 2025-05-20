@@ -15,7 +15,7 @@ const toggleButton = document.getElementById('cart-toggle');
 
 const searchInput = document.getElementById('search-input');
 const sortSelect = document.getElementById('sort-select');
-const categorySelect = document.getElementById('category-select'); // НОВЫЙ ЭЛЕМЕНТ
+const categorySelect = document.getElementById('category-select');
 
 let allProducts = [];
 let cart = [];
@@ -50,7 +50,6 @@ toggleButton.addEventListener('click', () => {
 // Загрузка товаров из Supabase
 async function loadProducts() {
     productsContainer.textContent = 'Загрузка товаров...';
-    // Добавили 'category' в select-запрос, убедитесь, что столбец 'category' существует в Supabase
     const { data, error } = await supabase.from('products').select('id,name,price,image_url,unit,category'); 
     if (error) {
         productsContainer.textContent = 'Ошибка загрузки товаров';
@@ -58,20 +57,20 @@ async function loadProducts() {
         return;
     }
     allProducts = data;
-    populateCategories(); // Заполняем выпадающий список категорий после загрузки товаров
-    applyFiltersAndSort(); // Применяем фильтры и сортировку после загрузки
+    populateCategories();
+    applyFiltersAndSort();
 }
 
-// НОВАЯ ФУНКЦИЯ: Заполнение выпадающего списка категорий
+// Заполнение выпадающего списка категорий
 function populateCategories() {
-    const categories = new Set(); // Используем Set для хранения уникальных категорий
+    const categories = new Set();
     allProducts.forEach(product => {
         if (product.category) {
             categories.add(product.category);
         }
     });
 
-    categorySelect.innerHTML = '<option value="all">Все категории</option>'; // Оставляем опцию "Все категории"
+    categorySelect.innerHTML = '<option value="all">Все категории</option>';
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
@@ -79,7 +78,6 @@ function populateCategories() {
         categorySelect.appendChild(option);
     });
 }
-
 
 function renderProducts(productsToDisplay) {
     if (!productsToDisplay.length) {
@@ -168,31 +166,36 @@ function updateCartUI() {
     const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     totalDiv.textContent = `Итого: ${total} ₸`;
 
-    cartItemsContainer.querySelectorAll('button.inc').forEach(btn => {
-        btn.onclick = () => {
-            const id = parseInt(btn.getAttribute('data-id'));
-            const item = cart.find(c => c.id === id);
-            if (item) {
-                item.qty++;
-                updateCartUI();
-            }
-        };
-    });
+    // --- УДАЛЕНЫ СТАРЫЕ ОБРАБОТЧИКИ ВНУТРИ updateCartUI ---
+    // Это место, где раньше были .querySelectorAll('button.inc') и .dec.
+    // Их здесь больше нет, так как мы используем делегирование событий.
+}
 
-    cartItemsContainer.querySelectorAll('button.dec').forEach(btn => {
-        btn.onclick = () => {
-            const id = parseInt(btn.getAttribute('data-id'));
-            const item = cart.find(c => c.id === id);
-            if (item) {
+// --- ЕДИНЫЙ ОБРАБОТЧИК СОБЫТИЙ ДЛЯ КОРЗИНЫ (Делегирование событий) ---
+// Этот обработчик назначается ОДИН РАЗ при загрузке скрипта,
+// и он будет перехватывать все клики по кнопкам +/- внутри cartItemsContainer.
+cartItemsContainer.addEventListener('click', (event) => {
+    const target = event.target; // Элемент, на который был произведен клик
+
+    // Проверяем, является ли целевой элемент кнопкой уменьшения или увеличения
+    if (target.classList.contains('inc') || target.classList.contains('dec')) {
+        const id = parseInt(target.dataset.id); // Получаем ID товара из data-id атрибута
+        const item = cart.find(c => c.id === id); // Находим товар в корзине
+
+        if (item) {
+            if (target.classList.contains('inc')) {
+                item.qty++;
+            } else if (target.classList.contains('dec')) {
                 item.qty--;
                 if (item.qty <= 0) {
-                    cart = cart.filter(c => c.id !== id);
+                    cart = cart.filter(c => c.id !== id); // Удаляем товар, если количество 0 или меньше
                 }
-                updateCartUI();
             }
-        };
-    });
-}
+            updateCartUI(); // Обновляем UI корзины
+        }
+    }
+});
+
 
 orderForm.onsubmit = async e => {
     e.preventDefault();
@@ -236,10 +239,10 @@ orderForm.onsubmit = async e => {
     }
 };
 
-// --- ОБНОВЛЕННАЯ ЛОГИКА ПОИСКА, СОРТИРОВКИ И ФИЛЬТРАЦИИ ПО КАТЕГОРИЯМ ---
+// --- ЛОГИКА ПОИСКА, СОРТИРОВКИ И ФИЛЬТРАЦИИ ПО КАТЕГОРИЯМ ---
 
 function applyFiltersAndSort() {
-    let currentProducts = [...allProducts]; // Всегда начинаем с полного списка товаров
+    let currentProducts = [...allProducts];
 
     // 1. Фильтрация по поисковому запросу
     const searchTerm = searchInput.value.toLowerCase().trim();
@@ -249,9 +252,9 @@ function applyFiltersAndSort() {
         );
     }
 
-    // 2. Фильтрация по категории (НОВАЯ ЧАСТЬ)
+    // 2. Фильтрация по категории
     const selectedCategory = categorySelect.value;
-    if (selectedCategory !== 'all') { // Если выбрана не "Все категории"
+    if (selectedCategory !== 'all') {
         currentProducts = currentProducts.filter(product =>
             product.category === selectedCategory
         );
@@ -272,21 +275,20 @@ function applyFiltersAndSort() {
         case 'name-desc':
             currentProducts.sort((a, b) => b.name.localeCompare(a.name));
             break;
-        // 'default' не требует сортировки
     }
 
-    renderProducts(currentProducts); // Отображаем отфильтрованные и отсортированные товары
+    renderProducts(currentProducts);
 }
 
 // Обработчики событий для поля поиска, сортировки и категории
 searchInput.addEventListener('input', applyFiltersAndSort);
 sortSelect.addEventListener('change', applyFiltersAndSort);
-categorySelect.addEventListener('change', applyFiltersAndSort); // НОВЫЙ ОБРАБОТЧИК ДЛЯ КАТЕГОРИЙ
+categorySelect.addEventListener('change', applyFiltersAndSort);
 
 
 // Инициализация: загружаем товары и обновляем UI
 loadProducts();
-updateCartUI(); // Обновляем UI корзины при загрузке страницы
+// updateCartUI(); // Этот вызов уже не нужен здесь, так как корзина будет обновляться после loadProducts()
 
 // Регистрация Service Worker
 if ('serviceWorker' in navigator) {

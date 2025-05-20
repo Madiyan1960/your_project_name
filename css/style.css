@@ -37,8 +37,17 @@ h1 {
     }
 
     .product-card {
-        padding: 6px;
-    }
+    border: 1px solid black; /* **Изменено: рамка теперь черная** */
+    border-radius: 8px;
+    padding: 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
 
     .product-card img {
     width: 100%;
@@ -80,8 +89,17 @@ h1 {
     }
 
     .product-card {
-        padding: 3px;
-    }
+    border: 1px solid black; /* **Изменено: рамка теперь черная** */
+    border-radius: 8px;
+    padding: 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
 
     .product-card img {
         margin-bottom: 0px; /* **Уменьшаем до 0px для средних мобильных** */

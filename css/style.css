@@ -28,7 +28,7 @@ h1 {
 @media (max-width: 768px) {
     #products {
         grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+        gap: 5px;
         padding: 8px;
     }
 

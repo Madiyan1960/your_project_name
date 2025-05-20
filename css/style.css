@@ -41,8 +41,14 @@ h1 {
     }
 
     .product-card img {
-        margin-bottom: 5px;
-    }
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    /* Изменяем базовое значение на 0px, чтобы не было конфликтов */
+    margin: 0 auto 0px auto; /* Базовый отступ снизу для больших экранов */
+    border-radius: 4px;
+}
     
     .product-name {
         font-size: 0.9em;
@@ -78,13 +84,16 @@ h1 {
     }
 
     .product-card img {
-        margin-bottom: 2px;
+        margin-bottom: 0px; /* **Уменьшаем до 0px для средних мобильных** */
+    }
     }
     
-    .product-name {
-        font-size: 0.75em;
-        margin: 2px 0 1px 0;
-        -webkit-line-clamp: 2;
+     .product-name {
+        font-size: 0.8em;
+        /* Если нужно, можете тут также уменьшить margin-top до 0px */
+        margin: 0px 0 1px 0; /* Или даже 0px сверху */
+        line-height: 1.1;
+        min-height: 2.2em;
     }
 
     .product-price {

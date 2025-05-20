@@ -19,7 +19,9 @@ h1 {
 #products {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+    /* Вместо gap: 15px; используем row-gap и column-gap для раздельного контроля */
+    row-gap: 20px;   /* **Увеличиваем вертикальный отступ на больших экранах** */
+    column-gap: 15px; /* Горизонтальный отступ оставляем как был */
     max-width: 900px;
     margin: 0 auto;
     padding: 10px;
@@ -28,8 +30,10 @@ h1 {
 @media (max-width: 768px) {
     #products {
         grid-template-columns: repeat(2, 1fr);
-        gap: 5px;
-        padding: 8px;
+        /* Вместо gap: 8px; */
+        row-gap: 12px;   /* **Увеличиваем вертикальный отступ на телефонах** */
+        column-gap: 8px; /* Горизонтальный отступ оставляем как был */
+        padding: 5px;
     }
 
     .product-card {
@@ -63,8 +67,10 @@ h1 {
 @media (max-width: 450px) {
     #products {
         grid-template-columns: repeat(2, 1fr);
-        gap: 5px;
-        padding: 3px;
+        /* Вместо gap: 4px; */
+        row-gap: 8px;    /* **Увеличиваем вертикальный отступ на очень маленьких телефонах** */
+        column-gap: 4px; /* Горизонтальный отступ оставляем как был */
+        padding: 2px;
     }
 
     .product-card {

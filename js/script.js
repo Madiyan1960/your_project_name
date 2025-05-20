@@ -3,7 +3,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = 'https://kpefeonxvgnfpgevkcwy.supabase.co';
 // !!! ВНИМАНИЕ: ЭТОТ КЛЮЧ УСТАРЕЛ !!!
 // ОЧЕНЬ РЕКОМЕНДУЕТСЯ ЗАМЕНИТЬ ЕГО НА ВАШ АКТУАЛЬНЫЙ anon (public) KEY ИЗ ПАНЕЛИ SUPABASE
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY4MDgsImV4cCI6MjA2MjgxMjgwOH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlZ29ueHZnZGYwcG1rY2d3eSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNjk1MTU4ODAwLCJleHAiOjE4NTQxODkwMDB9.aZJhwODNOS3FhyT8k-qAAfvo0NaBv4QSm6SwuNaeys';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -201,7 +201,8 @@ cartItemsContainer.addEventListener('click', (event) => {
     if (target.classList.contains('inc') || target.classList.contains('dec')) {
         // Диагностика: клик по кнопке +/-
         console.log("Клик по кнопке +/-. ID:", target.dataset.id, "Класс кнопки:", target.classList.contains('inc') ? 'inc' : 'dec');
-        const id = parseInt(target.dataset.id); 
+        // ИСПРАВЛЕНИЕ ЗДЕСЬ: УБРАЛИ parseInt()
+        const id = target.dataset.id; // ID уже является строкой (UUID), не нужно его парсить в число
         const item = cart.find(c => c.id === id); 
 
         if (item) {

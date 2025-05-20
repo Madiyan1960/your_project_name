@@ -28,73 +28,93 @@ h1 {
     padding: 10px; /* Внутренний отступ контейнера */
 }
 
-/* --- Медиа-запросы для адаптивности колонок --- */
+/* --- Медиа-запросы для адаптивности колонок и размеров на мобильных --- */
 
-/* На планшетах (от 601px до 900px) - оставим 3 колонки, как и было предложено */
-/* @media (min-width: 601px) and (max-width: 900px) {
-    #products {
-        grid-template-columns: repeat(3, 1fr);
-    }
-} */
-/* Это правило можно удалить, если #products уже имеет 3 колонки по умолчанию */
-
-/* На мобильных устройствах (до 600px) - 2 колонки */
+/* На мобильных устройствах (до 600px) - 2 колонки и уменьшенные размеры */
 @media (max-width: 600px) {
     #products {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px; /* Немного уменьшим отступ на мобильных */
+        grid-template-columns: repeat(2, 1fr); /* 2 колонки на мобильных */
+        gap: 5px; /* СИЛЬНО уменьшим отступ между карточками */
         padding: 5px; /* Уменьшим padding контейнера на мобильных */
+    }
+
+    .product-card {
+        padding: 4px; /* Уменьшим padding внутри карточки */
+    }
+
+    .product-card img {
+        /* Уменьшаем размер изображения на мобильных */
+        /* height: 80px; /* Задаем фиксированную высоту, НО ОБРАТИТЕ ВНИМАНИЕ на aspect-ratio */
+        max-height: 100px; /* Максимальная высота изображения */
+        width: auto; /* Позволяем ширине подстраиваться, чтобы сохранить aspect-ratio */
+        margin-bottom: 2px; /* Уменьшим отступ снизу */
+        aspect-ratio: 1 / 1; /* Сохраняем квадратные пропорции */
+    }
+    
+    .product-name {
+        font-size: 0.8em; /* Еще уменьшим размер шрифта названия */
+        margin: 3px 0 2px 0; /* Уменьшим отступы для названия */
+        -webkit-line-clamp: 2; /* Оставляем 2 строки */
+        min-height: auto; /* Убираем min-height, пусть подстраивается */
+    }
+
+    .product-price {
+        font-size: 0.75em; /* Еще уменьшим размер шрифта цены */
+        margin-bottom: 2px; /* Уменьшим отступ для цены */
+    }
+
+    button {
+        padding: 3px 5px; /* Еще уменьшим padding кнопки */
+        font-size: 0.7em; /* Еще уменьшим размер шрифта кнопки */
     }
 }
 
-/* На очень маленьких мобильных устройствах (до 400px, опционально, если 2 колонки слишком тесно) */
-/* @media (max-width: 400px) {
+/* На очень маленьких мобильных устройствах (до 380px, опционально, если 2 колонки все еще тесно) */
+@media (max-width: 380px) {
     #products {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* На очень узких экранах - 1 колонка */
+        gap: 8px;
     }
-} */
+}
 
 
 /* --- Стили для каждой отдельной карточки (.product-card) --- */
 .product-card {
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 8px; /* Немного padding внутри карточки */
+    padding: 8px; /* Базовый padding для больших экранов */
     background: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     text-align: center;
     display: flex;
     flex-direction: column;
-    /* Убираем height: 100% из .product-card, чтобы избежать вытягивания всей карточки. */
-    /* Вместо этого, мы будем контролировать высоту контента внутри. */
-    /* overflow: hidden; /* Может быть полезно, если содержимое выходит за пределы */
+    justify-content: space-between;
+    /* height: 100%; /* Убираем, чтобы карточка могла быть более компактной, если содержимое маленькое */
+    /* overflow: hidden; /* Если хотим, чтобы содержимое обрезалось, а не вытягивало карточку */
 }
 
 /* --- Стили для изображения внутри карточки (.product-card img) --- */
 .product-card img {
-    width: 100%; /* Изображение занимает всю ширину карточки */
+    width: 100%; /* Базовая ширина для больших экранов */
     aspect-ratio: 1 / 1; /* ГЛАВНОЕ: ДЕЛАЕМ ИЗОБРАЖЕНИЕ КВАДРАТНЫМ */
     object-fit: cover; /* Изображение будет обрезано, чтобы полностью покрыть квадрат */
-    display: block; /* Убирает лишний пробел */
-    margin: 0 auto 5px auto; /* Центрируем изображение и добавляем отступ снизу */
+    display: block;
+    margin: 0 auto 5px auto;
     border-radius: 4px;
-    /* Убедимся, что изображение всегда имеет фиксированную высоту в мобильной версии */
-    /* Убираем height: 100px; - оно конфликтовало с aspect-ratio. */
 }
 
 /* Стили для текста в карточке */
 .product-name {
     font-weight: bold;
-    margin: 5px 0 3px 0;
+    margin: 5px 0 3px 0; /* Базовые отступы для больших экранов */
     font-size: 1em;
     color: #333;
-    /* Ограничиваем количество строк для названия, чтобы предотвратить вытягивание */
     overflow: hidden;
-    text-overflow: ellipsis; /* Добавляет "..." если текст обрезается */
+    text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2; /* Ограничиваем 2 строками */
     -webkit-box-orient: vertical;
-    min-height: 2.4em; /* Минимальная высота для 2 строк текста (2 * line-height) */
+    min-height: 2.4em; /* Минимальная высота для 2 строк текста на больших экранах */
 }
 
 .product-price {
@@ -107,11 +127,11 @@ button {
     background: #2a9d8f;
     color: white;
     border: none;
-    padding: 6px 10px;
+    padding: 6px 10px; /* Базовый padding кнопки для больших экранов */
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.9em;
-    margin-top: auto; /* Прижимает кнопку к низу, если карточка flex */
+    margin-top: auto;
 }
 
 button:hover {
@@ -222,7 +242,7 @@ button:hover {
     margin-top: 8px;
 }
 
-h3 { /* Этот стиль H3 может быть конфликтным, если он не для заголовков карточек */
+h3 {
     text-align: left;
     margin-top: 5px;
     font-size: 24px;

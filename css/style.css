@@ -1,45 +1,87 @@
-body { font-family: Arial, sans-serif; margin: 10px; background: #f9f9f9; }
-h1 { text-align: center; }
-
-#products {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
-    justify-content: center;
-}
-@media (max-width: 600px) {
-    #products {
-        grid-template-columns: repeat(2, 1fr);
-    }
+body {
+    font-family: Arial, sans-serif;
+    margin: 10px;
+    background: #f9f9f9;
 }
 
-@media (min-width: 601px) and (max-width: 900px) {
-    #products {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-.product-card {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 8px;
-    background: #fff;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+h1 {
     text-align: center;
 }
-.product-card img {
-    max-width: 100%;
-    height: 100px;
-    object-fit: contain;
+
+.shop-title {
+    font-family: 'Pacifico', cursive; /* Убедитесь, что этот шрифт подключен */
+    font-size: 2.5em;
+    color: #6a1b9a; /* Фиолетовый цвет */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    margin: 5px 0;
 }
+
+/* --- Стили для контейнера карточек (используем #products) --- */
+#products {
+    display: grid;
+    /* Базовое расположение: 3 колонки для больших экранов */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 15px; /* Уменьшаем отступ для более плотной сетки */
+    max-width: 900px; /* Ограничиваем максимальную ширину для центрирования */
+    margin: 0 auto; /* Центрируем контейнер */
+    padding: 10px;
+}
+
+/* Медиа-запросы для контейнера #products */
+@media (max-width: 768px) {
+    #products {
+        grid-template-columns: repeat(2, 1fr); /* 2 колонки на планшетах */
+        gap: 10px; /* Немного уменьшаем отступ */
+    }
+}
+
+@media (max-width: 480px) {
+    #products {
+        grid-template-columns: 1fr; /* 1 колонка на мобильных устройствах */
+        gap: 10px;
+    }
+}
+
+
+/* --- Стили для каждой отдельной карточки (.product-card) --- */
+.product-card {
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Немного увеличим скругление */
+    padding: 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Легкая тень */
+    text-align: center;
+    display: flex; /* Используем flexbox для внутреннего выравнивания контента */
+    flex-direction: column; /* Элементы идут сверху вниз */
+    justify-content: space-between; /* Распределяем контент по высоте */
+    height: 100%; /* Карточки будут занимать всю доступную высоту в гриде */
+}
+
+/* --- Стили для изображения внутри карточки (.product-card img) --- */
+.product-card img {
+    width: 100%; /* Изображение занимает всю ширину */
+    aspect-ratio: 1 / 1; /* ГЛАВНОЕ: ДЕЛАЕМ ИЗОБРАЖЕНИЕ КВАДРАТНЫМ */
+    object-fit: cover; /* Изображение будет обрезано, чтобы полностью покрыть квадрат */
+    display: block; /* Убирает лишний пробел */
+    margin-bottom: 5px; /* Небольшой отступ от изображения до текста */
+    border-radius: 4px; /* Легкое скругление углов изображения */
+}
+
+/* Стили для текста в карточке */
 .product-name {
     font-weight: bold;
     margin: 5px 0 3px 0;
-}
-.product-price {
+    font-size: 1em; /* Регулируем размер шрифта */
     color: #333;
-    margin-bottom: 5px;
 }
+
+.product-price {
+    color: #555;
+    margin-bottom: 5px;
+    font-size: 0.9em; /* Регулируем размер шрифта */
+}
+
 button {
     background: #2a9d8f;
     color: white;
@@ -47,11 +89,15 @@ button {
     padding: 6px 10px;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 0.9em; /* Регулируем размер шрифта кнопки */
+    margin-top: auto; /* Прижимает кнопку к низу, если карточка flex */
 }
+
 button:hover {
     background: #21867a;
 }
 
+/* --- Стили для корзины и ее переключателя --- */
 #cart-toggle {
     position: fixed;
     top: 10px;
@@ -66,6 +112,7 @@ button:hover {
     border: none;
     gap: 4px;
     z-index: 1001;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Добавим тень */
 }
 
 #cart-toggle img {
@@ -77,13 +124,16 @@ button:hover {
 #cart-text {
     font-size: 12px;
     color: black;
+    font-weight: bold;
 }
 
-#cart-toggle {
+/* #cart-toggle (дублирование, можно удалить) */
+/* #cart-toggle {
     background: #ffeb3b;
     border-radius: 8px;
     padding: 3px;
-}
+} */
+
 
 #cart {
     width: 90vw;
@@ -158,75 +208,10 @@ button:hover {
     color: green;
     margin-top: 8px;
 }
+
 h3 {
     text-align: left;
     margin-top: 5px;
     font-size: 24px;
     color: #ed2d5a;
-}
-
-.shop-title {
-    font-family: 'Pacifico', cursive;
-    font-size: 2.5em;
-    color: #6a1b9a; /* Фиолетовый цвет */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    margin: 5px 0;
-}
-/* Контейнер для карточек: использует Flexbox или Grid для раскладки */
-.cards-container {
-  display: grid; /* Используем CSS Grid для удобства */
-  grid-template-columns: repeat(3, 1fr); /* Определяем 3 колонки одинаковой ширины */
-  gap: 10px; /* Отступы между карточками (и по горизонтали, и по вертикали) */
-  max-width: 700px; /* Максимальная ширина контейнера для центрирования */
-  margin: 0 auto; /* Центрирование контейнера на странице */
-  padding: 10px; /* Внутренние отступы контейнера */
-}
-
-/* Стили для каждой отдельной карточки */
-.card {
-  background-color: #ffffff; /* Белый фон */
-  border: 1px solid #ddd; /* Тонкая серая рамка */
-  border-radius: 8px; /* Скругленные углы */
-  overflow: hidden; /* Обрезаем содержимое, которое выходит за границы */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Легкая тень для объема */
-  text-align: center; /* Центрирование текста внутри карточки */
-  padding-bottom: 10px; /* Отступ снизу для текста */
-}
-
-/* Стили для изображения внутри карточки */
-.card img {
-  width: 100%; /* Изображение занимает всю ширину карточки */
-  height: 100px; /* Фиксированная высота изображения, можно настроить */
-  object-fit: cover; /* Изображение будет обрезано, чтобы полностью покрыть область */
-  display: block; /* Убирает лишний пробел под изображением */
-  aspect-ratio: 1 / 1; /* Устанавливает соотношение сторон 1:1 для изображения, делая его квадратным */
-}
-
-/* Стили для текста внутри карточки */
-.card h3 {
-  font-size: 1.1em;
-  margin: 10px 0 5px;
-  color: #333;
-}
-
-.card p {
-  font-size: 0.9em;
-  color: #666;
-  margin: 0;
-}
-
-/* Медиа-запросы для адаптивности */
-@media (max-width: 768px) {
-  .cards-container {
-    grid-template-columns: repeat(2, 1fr); /* На планшетах 2 колонки */
-    gap: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .cards-container {
-    grid-template-columns: 3fr; /* На мобильных устройствах 1 колонка */
-    gap: 10px;
-  }
 }

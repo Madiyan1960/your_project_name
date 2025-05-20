@@ -1,3 +1,63 @@
+// ... (начало вашего js/script.js) ...
+
+const productsContainer = document.getElementById('products');
+const cartItemsContainer = document.getElementById('cartItems');
+// ЭТА СТРОКА ДОЛЖНА ВЫВЕСТИ <div id="cartItems">...</div>
+console.log("cartItemsContainer при инициализации:", cartItemsContainer); 
+const totalDiv = document.getElementById('total');
+const orderForm = document.getElementById('orderForm');
+const messageDiv = document.getElementById('message');
+const cartPanel = document.getElementById('cart');
+const toggleButton = document.getElementById('cart-toggle');
+
+// ... (весь остальной код до обработчика cartItemsContainer) ...
+
+// --- ЕДИНЫЙ ОБРАБОТЧИК СОБЫТИЙ ДЛЯ КОРЗИНЫ (Делегирование событий) ---
+// Этот обработчик назначается ОДИН РАЗ при загрузке скрипта,
+// и он будет перехватывать все клики по кнопкам +/- внутри cartItemsContainer.
+
+// ЭТА СТРОКА ДОЛЖНА ВЫВЕСТИ ПОПЫТКУ НАЗНАЧЕНИЯ ОБРАБОТЧИКА
+console.log("Попытка назначить обработчик клика на cartItemsContainer (перед addEventListener):", cartItemsContainer); 
+cartItemsContainer.addEventListener('click', (event) => {
+    // ЭТА СТРОКА ДОЛЖНА ВЫВЕСТИ, ЕСЛИ КЛИК ДОХОДИТ ДО ОБРАБОТЧИКА
+    console.log("Клик обнаружен в cartItemsContainer. Цель клика (event.target):", event.target); 
+
+    const target = event.target; 
+
+    // Дополнительный console.log для отладки
+    if (target.classList.contains('inc') || target.classList.contains('dec')) {
+        console.log("Клик по кнопке +/-. ID:", target.dataset.id);
+    } else {
+        console.log("Клик не по кнопке +/-. Классы цели:", target.classList);
+    }
+
+    if (target.classList.contains('inc') || target.classList.contains('dec')) {
+        const id = parseInt(target.dataset.id); 
+        const item = cart.find(c => c.id === id); 
+
+        if (item) {
+            console.log("Товар найден в корзине:", item);
+            if (target.classList.contains('inc')) {
+                item.qty++;
+                console.log("Количество увеличено:", item.qty);
+            } else if (target.classList.contains('dec')) {
+                item.qty--;
+                console.log("Количество уменьшено:", item.qty);
+                if (item.qty <= 0) {
+                    cart = cart.filter(c => c.id !== id); 
+                    console.log("Товар удален из корзины.");
+                }
+            }
+            updateCartUI(); 
+            console.log("updateCartUI() вызван.");
+        } else {
+            console.log("Ошибка: Товар с ID", id, "не найден в корзине.");
+        }
+    }
+});
+
+
+// ... (остальная часть вашего js/script.js) ...
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://kpefeonxvgnfpgevkcwy.supabase.co';

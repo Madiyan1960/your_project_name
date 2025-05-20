@@ -1,7 +1,7 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://kpefeonxvgnfpgevkcwy.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY4MDgsImV4cCI6MjA2MjgxMjgwOH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys'; // Обязательно замените эту ключ на актуальный из вашего проекта Supabase!
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY4MDgsImV4cCI6MjA2MjgxMjgwOH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys'; // ОБНОВИТЕ ЭТОТ КЛЮЧ!
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -13,13 +13,11 @@ const messageDiv = document.getElementById('message');
 const cartPanel = document.getElementById('cart');
 const toggleButton = document.getElementById('cart-toggle');
 
-// Новые элементы для поиска и сортировки
 const searchInput = document.getElementById('search-input');
 const sortSelect = document.getElementById('sort-select');
+const categorySelect = document.getElementById('category-select'); // НОВЫЙ ЭЛЕМЕНТ
 
-// Переменная для хранения ВСЕХ загруженных товаров
 let allProducts = [];
-// Переменная для хранения товаров в корзине
 let cart = [];
 
 // Обработчики для полей формы (имя, телефон, адрес)
@@ -28,12 +26,10 @@ window.addEventListener("DOMContentLoaded", function () {
     const phoneInput = document.getElementById("phone");
     const addressInput = document.getElementById("address");
 
-    // Загрузка сохранённых данных
     nameInput.value = localStorage.getItem("name") || "";
     phoneInput.value = localStorage.getItem("phone") || "";
     addressInput.value = localStorage.getItem("address") || "";
 
-    // Сохранение при вводе
     nameInput.addEventListener("input", () => {
         localStorage.setItem("name", nameInput.value);
     });
@@ -47,7 +43,6 @@ window.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Переключение видимости корзины
 toggleButton.addEventListener('click', () => {
     cartPanel.classList.toggle('open');
 });
@@ -55,17 +50,37 @@ toggleButton.addEventListener('click', () => {
 // Загрузка товаров из Supabase
 async function loadProducts() {
     productsContainer.textContent = 'Загрузка товаров...';
-    const { data, error } = await supabase.from('products').select('id,name,price,image_url,unit');
+    // Добавили 'category' в select-запрос, убедитесь, что столбец 'category' существует в Supabase
+    const { data, error } = await supabase.from('products').select('id,name,price,image_url,unit,category'); 
     if (error) {
         productsContainer.textContent = 'Ошибка загрузки товаров';
         console.error(error);
         return;
     }
-    allProducts = data; // Сохраняем все загруженные товары в allProducts
+    allProducts = data;
+    populateCategories(); // Заполняем выпадающий список категорий после загрузки товаров
     applyFiltersAndSort(); // Применяем фильтры и сортировку после загрузки
 }
 
-// Отображение товаров (теперь принимает список товаров для отображения)
+// НОВАЯ ФУНКЦИЯ: Заполнение выпадающего списка категорий
+function populateCategories() {
+    const categories = new Set(); // Используем Set для хранения уникальных категорий
+    allProducts.forEach(product => {
+        if (product.category) {
+            categories.add(product.category);
+        }
+    });
+
+    categorySelect.innerHTML = '<option value="all">Все категории</option>'; // Оставляем опцию "Все категории"
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categorySelect.appendChild(option);
+    });
+}
+
+
 function renderProducts(productsToDisplay) {
     if (!productsToDisplay.length) {
         productsContainer.textContent = 'Нет товаров, соответствующих вашему запросу.';
@@ -91,9 +106,8 @@ function renderProducts(productsToDisplay) {
     });
 }
 
-// Добавление товара в корзину
 function addToCart(productId) {
-    const product = allProducts.find(p => p.id === productId); // Ищем в allProducts
+    const product = allProducts.find(p => p.id === productId);
     if (!product) return;
     const item = cart.find(c => c.id === productId);
     if (item) {
@@ -104,7 +118,6 @@ function addToCart(productId) {
     updateCartUI();
 }
 
-// Анимация "полета" товара в корзину
 function flyToCart(imgElement) {
     const cartIcon = document.querySelector('#cart-icon');
     const imgClone = imgElement.cloneNode(true);
@@ -131,7 +144,6 @@ function flyToCart(imgElement) {
     }, 800);
 }
 
-// Обновление интерфейса корзины
 function updateCartUI() {
     if (cart.length === 0) {
         cartItemsContainer.textContent = 'Корзина пуста';
@@ -153,15 +165,13 @@ function updateCartUI() {
         cartItemsContainer.appendChild(div);
     });
 
-    // Обновление суммы
     const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     totalDiv.textContent = `Итого: ${total} ₸`;
 
-    // Обработчики кнопок "+" и "-"
     cartItemsContainer.querySelectorAll('button.inc').forEach(btn => {
         btn.onclick = () => {
-            const id = parseInt(btn.getAttribute('data-id')); // Преобразуем в число
-            const item = cart.find(c => c.id === id); // Сравниваем числа
+            const id = parseInt(btn.getAttribute('data-id'));
+            const item = cart.find(c => c.id === id);
             if (item) {
                 item.qty++;
                 updateCartUI();
@@ -171,12 +181,12 @@ function updateCartUI() {
 
     cartItemsContainer.querySelectorAll('button.dec').forEach(btn => {
         btn.onclick = () => {
-            const id = parseInt(btn.getAttribute('data-id')); // Преобразуем в число
-            const item = cart.find(c => c.id === id); // Сравниваем числа
+            const id = parseInt(btn.getAttribute('data-id'));
+            const item = cart.find(c => c.id === id);
             if (item) {
                 item.qty--;
                 if (item.qty <= 0) {
-                    cart = cart.filter(c => c.id !== id); // Используем !== для корректного сравнения
+                    cart = cart.filter(c => c.id !== id);
                 }
                 updateCartUI();
             }
@@ -184,7 +194,6 @@ function updateCartUI() {
     });
 }
 
-// Отправка заказа
 orderForm.onsubmit = async e => {
     e.preventDefault();
     if (cart.length === 0) {
@@ -203,8 +212,8 @@ orderForm.onsubmit = async e => {
 
     const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     const productsText = cart.map(item => {
-        const totalItemPrice = (item.price * item.qty); // Исправлено: используем item.price, а не product.price
-        return `${item.name} ${item.price} ₸ х ${item.qty} ${item.unit || ''} = ${totalItemPrice} ₸`; // Добавил unit
+        const totalItemPrice = (item.price * item.qty);
+        return `${item.name} ${item.price} ₸ х ${item.qty} ${item.unit || ''} = ${totalItemPrice} ₸`;
     }).join('\n');
 
 
@@ -222,55 +231,64 @@ orderForm.onsubmit = async e => {
         orderForm.reset();
         setTimeout(() => {
             messageDiv.textContent = '';
-            cartPanel.classList.remove('open'); // Закрываем корзину
+            cartPanel.classList.remove('open');
         }, 3000);
     }
 };
 
-// --- НОВАЯ ЛОГИКА ПОИСКА И СОРТИРОВКИ ---
+// --- ОБНОВЛЕННАЯ ЛОГИКА ПОИСКА, СОРТИРОВКИ И ФИЛЬТРАЦИИ ПО КАТЕГОРИЯМ ---
 
-// Функция, которая объединяет логику фильтрации и сортировки
 function applyFiltersAndSort() {
-    let filteredProducts = [...allProducts]; // Создаем копию всех товаров для фильтрации
+    let currentProducts = [...allProducts]; // Всегда начинаем с полного списка товаров
 
-    // 1. Поиск (фильтрация по названию)
+    // 1. Фильтрация по поисковому запросу
     const searchTerm = searchInput.value.toLowerCase().trim();
     if (searchTerm) {
-        filteredProducts = filteredProducts.filter(product =>
+        currentProducts = currentProducts.filter(product =>
             product.name.toLowerCase().includes(searchTerm)
         );
     }
 
-    // 2. Сортировка
+    // 2. Фильтрация по категории (НОВАЯ ЧАСТЬ)
+    const selectedCategory = categorySelect.value;
+    if (selectedCategory !== 'all') { // Если выбрана не "Все категории"
+        currentProducts = currentProducts.filter(product =>
+            product.category === selectedCategory
+        );
+    }
+
+    // 3. Сортировка
     const sortOption = sortSelect.value;
     switch (sortOption) {
         case 'price-asc':
-            filteredProducts.sort((a, b) => a.price - b.price);
+            currentProducts.sort((a, b) => a.price - b.price);
             break;
         case 'price-desc':
-            filteredProducts.sort((a, b) => b.price - a.price);
+            currentProducts.sort((a, b) => b.price - a.price);
             break;
         case 'name-asc':
-            filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+            currentProducts.sort((a, b) => a.name.localeCompare(b.name));
             break;
         case 'name-desc':
-            filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+            currentProducts.sort((a, b) => b.name.localeCompare(a.name));
             break;
         // 'default' не требует сортировки
     }
 
-    renderProducts(filteredProducts); // Отображаем отфильтрованные и отсортированные товары
+    renderProducts(currentProducts); // Отображаем отфильтрованные и отсортированные товары
 }
 
-// Обработчики событий для поля поиска и выпадающего списка сортировки
+// Обработчики событий для поля поиска, сортировки и категории
 searchInput.addEventListener('input', applyFiltersAndSort);
 sortSelect.addEventListener('change', applyFiltersAndSort);
+categorySelect.addEventListener('change', applyFiltersAndSort); // НОВЫЙ ОБРАБОТЧИК ДЛЯ КАТЕГОРИЙ
 
-// Инициализация
-loadProducts(); // Загружаем товары
+
+// Инициализация: загружаем товары и обновляем UI
+loadProducts();
 updateCartUI(); // Обновляем UI корзины при загрузке страницы
 
-// Регистрация Service Worker (оставляем как есть)
+// Регистрация Service Worker
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
         .then(() => console.log('✅ Service Worker зарегистрирован'))

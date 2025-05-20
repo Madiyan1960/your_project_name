@@ -1,3 +1,8 @@
+/* В самом начале вашего CSS */
+*, *::before, *::after {
+    box-sizing: border-box; /* **КЛЮЧЕВОЕ ИЗМЕНЕНИЕ ДЛЯ ПРЕДОТВРАЩЕНИЯ ПЕРЕКРЫТИЯ** */
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -7,6 +12,7 @@ body {
 h1 {
     text-align: center;
 }
+
 .shop-title {
     font-family: 'Pacifico', cursive;
     font-size: 2.5em;
@@ -19,9 +25,9 @@ h1 {
 #products {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* Вместо gap: 15px; используем row-gap и column-gap для раздельного контроля */
-    row-gap: 8px;   /* **Увеличиваем вертикальный отступ на больших экранах** */
-    column-gap: 8px; /* Горизонтальный отступ оставляем как был */
+    /* Отступы для больших экранов */
+    row-gap: 20px;
+    column-gap: 15px;
     max-width: 900px;
     margin: 0 auto;
     padding: 10px;
@@ -30,68 +36,79 @@ h1 {
 @media (max-width: 768px) {
     #products {
         grid-template-columns: repeat(2, 1fr);
-        /* Вместо gap: 8px; */
-        row-gap: 8px;   /* **Увеличиваем вертикальный отступ на телефонах** */
-        column-gap: 8px; /* Горизонтальный отступ оставляем как был */
+        /* Уменьшаем отступы для мобильных, чтобы избежать перекрытия */
+        row-gap: 8px;   /* Пробуем 8px */
+        column-gap: 8px; /* Пробуем 8px */
         padding: 5px;
     }
 
     .product-card {
-    border: 1px solid black; /* **Изменено: рамка теперь черная** */
-    border-radius: 8px;
-    padding: 8px;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-}
+        padding: 3px; /* **Еще немного уменьшаем padding карточки** */
+    }
 
     .product-card img {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    display: block;
-    /* Изменяем базовое значение на 0px, чтобы не было конфликтов */
-    margin: 0 auto 0px auto; /* Базовый отступ снизу для больших экранов */
-    border-radius: 4px;
-}
+        margin-bottom: 0px;
+    }
     
     .product-name {
-        font-size: 0.9em;
-        margin: 5px 0 3px 0;
-        line-height: 1.2;
-        -webkit-line-clamp: 2;
-        min-height: 2.4em;
+        font-size: 0.8em;
+        margin: 0px 0 0px 0; /* Убираем margin совсем */
+        line-height: 1.1;
+        min-height: 2.2em;
     }
 
     .product-price {
-        font-size: 0.85em;
-        margin-bottom: 2px; /* Изменено */
+        font-size: 0.75em;
+        margin-bottom: 0px;
     }
 
     button {
-        padding: 4px 6px;
-        font-size: 0.75em;
-        margin-top: 3px; /* Изменено */
+        padding: 3px 5px;
+        font-size: 0.65em;
+        margin-top: 0px;
     }
 }
 
 @media (max-width: 450px) {
     #products {
         grid-template-columns: repeat(2, 1fr);
-        /* Вместо gap: 4px; */
-        row-gap: 8px;    /* **Увеличиваем вертикальный отступ на очень маленьких телефонах** */
-        column-gap: 4px; /* Горизонтальный отступ оставляем как был */
+        /* Для очень маленьких экранов - еще меньше отступов */
+        row-gap: 5px;   /* Пробуем 5px */
+        column-gap: 5px; /* Пробуем 5px */
         padding: 2px;
     }
 
     .product-card {
-    border: 1px solid black; /* **Изменено: рамка теперь черная** */
+        padding: 1px; /* **Максимально уменьшаем padding карточки** */
+    }
+
+    .product-card img {
+        margin-bottom: 0px;
+    }
+    
+    .product-name {
+        font-size: 0.7em;
+        margin: 0px 0 0px 0;
+        line-height: 1.1;
+        min-height: 2.2em;
+    }
+
+    .product-price {
+        font-size: 0.65em;
+        margin-bottom: 0px;
+    }
+
+    button {
+        padding: 1px 2px; /* **Максимально уменьшаем padding кнопки** */
+        font-size: 0.55em; /* **Максимально уменьшаем шрифт кнопки** */
+        margin-top: 0px;
+    }
+}
+
+.product-card {
+    border: 1px solid black;
     border-radius: 8px;
-    padding: 8px;
+    padding: 8px; /* Базовый padding для больших экранов */
     background: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     text-align: center;
@@ -99,44 +116,6 @@ h1 {
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-}
-
-    .product-card img {
-        margin-bottom: 0px; /* **Уменьшаем до 0px для средних мобильных** */
-    }
-    }
-    
-     .product-name {
-        font-size: 0.8em;
-        /* Если нужно, можете тут также уменьшить margin-top до 0px */
-        margin: 0px 0 1px 0; /* Или даже 0px сверху */
-        line-height: 1.1;
-        min-height: 2.2em;
-    }
-
-    .product-price {
-        font-size: 0.7em;
-        margin-bottom: 0px; /* Изменено */
-    }
-
-    button {
-        padding: 2px 4px;
-        font-size: 0.65em;
-        margin-top: 0px; /* Изменено */
-    }
-}
-
-.product-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 8px;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Оставляем, чтобы выравнивать остальной контент */
-    height: 100%; /* Оставляем, чтобы карточки выравнивались по высоте в гриде */
 }
 
 .product-card img {
@@ -144,13 +123,13 @@ h1 {
     aspect-ratio: 1 / 1;
     object-fit: cover;
     display: block;
-    margin: 0 auto 5px auto;
+    margin: 0 auto 0px auto; /* Базовый отступ снизу 0px */
     border-radius: 4px;
 }
 
 .product-name {
     font-weight: bold;
-    margin: 5px 0 3px 0;
+    margin: 5px 0 3px 0; /* Базовый отступ */
     font-size: 1em;
     color: #333;
     overflow: hidden;
@@ -175,7 +154,7 @@ button {
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.9em;
-    margin-top: 5px; /* Изменено: теперь это фиксированный отступ */
+    margin-top: 5px; /* Базовый отступ */
 }
 
 button:hover {
@@ -184,8 +163,8 @@ button:hover {
 
 #cart-toggle {
     position: fixed;
-    top: 5px;
-    right: 5px;
+    top: 10px;
+    right: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -200,8 +179,8 @@ button:hover {
 }
 
 #cart-toggle img {
-    width: 20px;
-    height: 20px;
+    width: 40px;
+    height: 40px;
     display: block;
 }
 
@@ -215,16 +194,16 @@ button:hover {
     width: 90vw;
     max-width: 320px;
     position: fixed;
-    right: 5px;
+    right: 10px;
     top: 80px;
     max-height: 85vh;
     overflow-y: auto;
     background: white;
     border: 1px solid #ccc;
     border-radius: 8px;
-    padding: 5px;
+    padding: 10px;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    font-size: 12px;
+    font-size: 14px;
     transition: transform 0.3s ease;
     transform: translateX(100%);
     z-index: 1000;

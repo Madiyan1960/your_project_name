@@ -1,7 +1,7 @@
 {
   "name": "Магазин у дома",
   "short_name": "Магазин",
-  "start_url": "index.html?source=pwa"
+  "start_url": "index.html?source=pwa",
 
   "display": "standalone",
   "background_color": "#f4f4f4",

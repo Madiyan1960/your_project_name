@@ -20,7 +20,7 @@ h1 {
 
 /* Стили для заголовка магазина (.shop-title) */
 .shop-title {
-    font-family: 'Pacifico', cursive; /* Использует шрифт Pacifico (убедитесь, что он подключен в HTML) */
+    font-family: Arial, sans-serif; /* Использует шрифт Pacifico (убедитесь, что он подключен в HTML) */
     font-size: 2.5em;                /* Размер шрифта: 2.5 раза больше базового шрифта */
     color: #6a1b9a;                  /* Цвет текста: фиолетовый */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Добавляет тень к тексту для объема */

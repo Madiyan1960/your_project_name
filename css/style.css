@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 0; /* Уберем внешний margin для body, чтобы получить больше пространства */
+    margin: 0; /* Убираем внешний margin для body, чтобы получить больше пространства */
     background: #f9f9f9;
 }
 
@@ -20,26 +20,54 @@ h1 {
 /* --- Контейнер для карточек: ID #products --- */
 #products {
     display: grid;
-    /* Базовое значение: 3 колонки для всех экранов */
-    grid-template-columns: repeat(3, 1fr); /* Задаем строго 3 колонки */
-    gap: 10px; /* Отступы между карточками */
+    /* Базовое значение (для десктопов и широких планшетов): 3 колонки */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px; /* Отступы между карточками */
     max-width: 900px; /* Максимальная ширина контейнера */
     margin: 0 auto; /* Центрирование контейнера */
     padding: 10px; /* Внутренний отступ контейнера */
 }
 
+/* --- Медиа-запросы для адаптивности колонок --- */
+
+/* На планшетах (от 601px до 900px) - оставим 3 колонки, как и было предложено */
+/* @media (min-width: 601px) and (max-width: 900px) {
+    #products {
+        grid-template-columns: repeat(3, 1fr);
+    }
+} */
+/* Это правило можно удалить, если #products уже имеет 3 колонки по умолчанию */
+
+/* На мобильных устройствах (до 600px) - 2 колонки */
+@media (max-width: 600px) {
+    #products {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px; /* Немного уменьшим отступ на мобильных */
+        padding: 5px; /* Уменьшим padding контейнера на мобильных */
+    }
+}
+
+/* На очень маленьких мобильных устройствах (до 400px, опционально, если 2 колонки слишком тесно) */
+/* @media (max-width: 400px) {
+    #products {
+        grid-template-columns: 1fr;
+    }
+} */
+
+
 /* --- Стили для каждой отдельной карточки (.product-card) --- */
 .product-card {
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 5px; /* Уменьшаем padding карточки, чтобы сэкономить место */
+    padding: 8px; /* Немного padding внутри карточки */
     background: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
+    /* Убираем height: 100% из .product-card, чтобы избежать вытягивания всей карточки. */
+    /* Вместо этого, мы будем контролировать высоту контента внутри. */
+    /* overflow: hidden; /* Может быть полезно, если содержимое выходит за пределы */
 }
 
 /* --- Стили для изображения внутри карточки (.product-card img) --- */
@@ -50,54 +78,45 @@ h1 {
     display: block; /* Убирает лишний пробел */
     margin: 0 auto 5px auto; /* Центрируем изображение и добавляем отступ снизу */
     border-radius: 4px;
+    /* Убедимся, что изображение всегда имеет фиксированную высоту в мобильной версии */
+    /* Убираем height: 100px; - оно конфликтовало с aspect-ratio. */
 }
 
 /* Стили для текста в карточке */
 .product-name {
     font-weight: bold;
     margin: 5px 0 3px 0;
-    font-size: 0.85em; /* Немного уменьшим размер шрифта */
-    line-height: 1.2; /* Уменьшим межстрочный интервал */
+    font-size: 1em;
     color: #333;
+    /* Ограничиваем количество строк для названия, чтобы предотвратить вытягивание */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Добавляет "..." если текст обрезается */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Ограничиваем 2 строками */
+    -webkit-box-orient: vertical;
+    min-height: 2.4em; /* Минимальная высота для 2 строк текста (2 * line-height) */
 }
 
 .product-price {
     color: #555;
     margin-bottom: 5px;
-    font-size: 0.75em; /* Немного уменьшим размер шрифта */
+    font-size: 0.9em;
 }
 
 button {
     background: #2a9d8f;
     color: white;
     border: none;
-    padding: 4px 6px; /* Еще уменьшим padding кнопки */
+    padding: 6px 10px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 0.75em; /* Еще уменьшим размер шрифта кнопки */
-    margin-top: auto;
+    font-size: 0.9em;
+    margin-top: auto; /* Прижимает кнопку к низу, если карточка flex */
 }
 
 button:hover {
     background: #21867a;
 }
-
-/* --- Медиа-запросы: только для тонкой настройки, НЕ меняем количество колонок --- */
-/* Если 3 колонки ВООБЩЕ не помещаются на очень узких экранах, браузер сам переключит на 2 */
-/* Вы можете попробовать удалить этот блок, если он вызывает проблемы */
-/* @media (max-width: 480px) { */
-/* #products { */
-/* gap: 5px; */ /* Ещё меньше отступ */
-/* padding: 5px; */
-/* } */
-/* .product-card { */
-/* padding: 3px; */
-/* } */
-/* .product-name { font-size: 0.8em; } */
-/* .product-price { font-size: 0.7em; } */
-/* button { padding: 3px 5px; font-size: 0.7em; } */
-/* } */
-
 
 /* --- Остальные стили (корзина и т.д.) без изменений --- */
 #cart-toggle {
@@ -203,7 +222,7 @@ button:hover {
     margin-top: 8px;
 }
 
-h3 {
+h3 { /* Этот стиль H3 может быть конфликтным, если он не для заголовков карточек */
     text-align: left;
     margin-top: 5px;
     font-size: 24px;

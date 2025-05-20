@@ -57,7 +57,7 @@ h1 {
 
     .product-price {
         font-size: 0.85em; /* Немного увеличен размер шрифта цены */
-        margin-bottom: 2px; /* Стандартный отступ для цены */
+        margin-bottom: 0px; /* Стандартный отступ для цены */
     }
 
     button {

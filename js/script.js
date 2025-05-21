@@ -208,8 +208,8 @@ async function loadProducts() {
         return;
     }
     allProducts = data;
-    populateCategories(); // Заполняем выпадающий список категорий
-    applyFiltersAndSort(); // Применяем фильтры и сортировку по умолчанию
+    //populateCategories(); // Заполняем выпадающий список категорий
+    //applyFiltersAndSort(); // Применяем фильтры и сортировку по умолчанию
     loadCartFromLocalStorage(); // Загружаем состояние корзины из localStorage
     updateCartUI(); // Обновляем UI корзины (включая счетчик)
 }

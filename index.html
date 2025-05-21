@@ -13,26 +13,32 @@
 </head>
 <body>
 
-    <div class="header-fixed-container">
-        <div class="header-top-row">
-            <h3 class="shop-title">«Меруерт»</h3>
-            <button id="cart-toggle" title="Открыть/закрыть корзину">
-                <h3>
-                    <span id="cart-icon">🛒</span> (<span id="cart-count">0</span>)
-                </h3>
-            </button>
-        </div>
+    <h3 class="shop-title">«Меруерт»</h3>
 
-        <div class="search-sort-filter">
-            <select id="category-select">
-                <option value="all">Все категории</option>
+    <div class="controls-container">
+        <input type="text" id="search-input" placeholder="Поиск по названию...">
+        <select id="sort-select">
+            <option value="default">Сортировка</option>
+            <option value="price-asc">По цене (возрастание)</option>
+            <option value="price-desc">По цене (убывание)</option>
+            <option value="name-asc">По названию (А-Я)</option>
+            <option value="name-desc">По названию (Я-А)</option>
+        </select>
+        <select id="category-select">
+            <option value="all">Все категории</option>
             </select>
-        </div>
     </div>
+
     <div id="products">Загрузка товаров...</div>
 
+    <button id="cart-toggle" title="Открыть/закрыть корзину">
+        
+        
+        <h3>🛒 (<span id="cart-count">0</span>)</h3>
+    </button>
+
     <div id="cart">
-        <button id="close-cart">✖</button>
+        
         <h2>Корзина</h2>
         <div id="cartItems">Корзина пуста</div>
         <div id="total">Итого: 0</div>

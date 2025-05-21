@@ -3,7 +3,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = 'https://kpefeonxvgnfpgevkcwy.supabase.co';
 // !!! ВНИМАНИЕ: ЭТОТ КЛЮЧ УСТАРЕЛ !!!
 // ОЧЕНЬ РЕКОМЕНДУЕТСЯ ЗАМЕНИТЬ ЕГО НА ВАШ АКТУАЛЬНЫЙ anon (public) KEY ИЗ ПАНЕЛИ SUPABASE
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY4MDgsImV4cCI6MjA2MjgxMjgwOH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY4MDgsImV4cCI6MjA2MjgxMjgwOH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys'; // ОБНОВИТЕ ЭТОТ КЛЮЧ НА АКТУАЛЬНЫЙ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -17,10 +17,9 @@ const cartPanel = document.getElementById('cart');
 const toggleButton = document.getElementById('cart-toggle');
 // Получаем элемент для обновления счетчика уникальных товаров в корзине
 const cartCountElement = document.getElementById('cart-count');
+const closeCartButton = document.getElementById('close-cart'); // Убедитесь, что у вас есть кнопка с id="close-cart" в HTML
 
-//const searchInput = document.getElementById('search-input');
-//const sortSelect = document.getElementById('sort-select');
-const categorySelect = document.getElementById('category-select');
+// Переменные для поиска, сортировки и категорий полностью удалены, так как эта функциональность убрана.
 
 let allProducts = []; // Все загруженные товары из Supabase
 let cart = []; // Текущее состояние корзины, массив объектов { product_data, qty }
@@ -57,6 +56,14 @@ window.addEventListener("DOMContentLoaded", function () {
 toggleButton.addEventListener('click', () => {
     cartPanel.classList.toggle('open');
 });
+
+// Закрытие панели корзины по кнопке
+if (closeCartButton) { // Проверка, что кнопка существует
+    closeCartButton.addEventListener('click', () => {
+        cartPanel.classList.remove('open');
+    });
+}
+
 
 // Добавление товара в корзину
 // Этот товар добавляется только один раз, если его нет в корзине.
@@ -141,9 +148,17 @@ function updateCartUI() {
     cart.forEach(item => {
         const div = document.createElement('div');
         div.className = 'cart-item';
+        // Вычисляем сумму за текущий товар
+        const itemTotalPrice = item.price * item.qty;
+
         div.innerHTML = `
-            <div class="cart-item-name">${item.name} (${item.price} ₸)</div>
-            <div class="cart-item-qty">
+            <div class="cart-item-info">
+                <span class="cart-item-name">${item.name}</span>
+                <span class="cart-item-details">
+                    (${item.price} ₸ x ${item.qty}${item.unit ? ' ' + item.unit : ''}) = ${itemTotalPrice} ₸
+                </span>
+            </div>
+            <div class="cart-item-qty-controls">
                 <button class="dec" data-id="${item.id}">-</button>
                 <div>${item.qty}</div>
                 <button class="inc" data-id="${item.id}">+</button>
@@ -195,7 +210,7 @@ cartItemsContainer.addEventListener('click', (event) => {
     }
 });
 
-// --- Функции загрузки, рендеринга и фильтрации товаров ---
+// --- Функции загрузки и рендеринга товаров ---
 
 // Загрузка товаров из Supabase
 async function loadProducts() {
@@ -208,29 +223,12 @@ async function loadProducts() {
         return;
     }
     allProducts = data;
-    //populateCategories(); // Заполняем выпадающий список категорий
-    //applyFiltersAndSort(); // Применяем фильтры и сортировку по умолчанию
+    renderProducts(allProducts); // <--- ДОБАВЛЕН ЭТОТ ВЫЗОВ ДЛЯ ОТОБРАЖЕНИЯ ТОВАРОВ
     loadCartFromLocalStorage(); // Загружаем состояние корзины из localStorage
     updateCartUI(); // Обновляем UI корзины (включая счетчик)
 }
 
-// Заполнение выпадающего списка категорий на основе загруженных товаров
-function populateCategories() {
-    const categories = new Set();
-    allProducts.forEach(product => {
-        if (product.category) {
-            categories.add(product.category);
-        }
-    });
-
-    categorySelect.innerHTML = '<option value="all">Все категории</option>';
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        categorySelect.appendChild(option);
-    });
-}
+// Функция populateCategories() полностью удалена, так как категорий больше нет.
 
 // Рендеринг списка товаров на странице
 function renderProducts(productsToDisplay) {
@@ -258,41 +256,9 @@ function renderProducts(productsToDisplay) {
     });
 }
 
-// Применение фильтров (поиск, категория) и сортировки к списку товаров
+// Функция applyFiltersAndSort() полностью удалена.
+// Обработчики событий для полей поиска, сортировки и категорий также удалены.
 
-
-    // 2. Фильтрация по категории
-    const selectedCategory = categorySelect.value;
-    if (selectedCategory !== 'all') {
-        currentProducts = currentProducts.filter(product =>
-            product.category === selectedCategory
-        );
-    }
-
-    // 3. Сортировка
-   // const sortOption = sortSelect.value;
-    //switch (sortOption) {
-      //  case 'price-asc':
-        //    currentProducts.sort((a, b) => a.price - b.price);
-          //  break;
-        //case 'price-desc':
-          //  currentProducts.sort((a, b) => b.price - a.price);
-            //break;
-        //case 'name-asc':
-          //  currentProducts.sort((a, b) => a.name.localeCompare(b.name));
-           // break;
-        //case 'name-desc':
-          //  currentProducts.sort((a, b) => b.name.localeCompare(a.name));
-           // break;
-    //}
-
-    //renderProducts(currentProducts); // Отображаем отфильтрованные и отсортированные товары
-//}
-
-// Обработчики событий для поля поиска, сортировки и категории
-//searchInput.addEventListener('input', applyFiltersAndSort);
-//sortSelect.addEventListener('change', applyFiltersAndSort);
-//categorySelect.addEventListener('change', applyFiltersAndSort);
 
 // --- Отправка заказа ---
 
@@ -316,7 +282,7 @@ orderForm.onsubmit = async e => {
     // Формируем текстовое описание товаров в заказе
     const productsText = cart.map(item => {
         const totalItemPrice = (item.price * item.qty);
-        return `${item.name} ${item.price} ₸ х ${item.qty} ${item.unit || ''} = ${totalItemPrice} ₸`;
+        return `${item.name} ${item.price} ₸ х ${item.qty}${item.unit ? ' ' + item.unit : ''} = ${totalItemPrice} ₸`;
     }).join('\n');
 
 

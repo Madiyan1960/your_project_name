@@ -15,19 +15,16 @@
 
     <h3 class="shop-title">«Меруерт»</h3>
 
-    <div class="controls-container">
-        <input type="text" id="search-input" placeholder="Поиск по названию...">
-        <select id="sort-select">
-            <option value="default">Сортировка</option>
-            <option value="price-asc">По цене (возрастание)</option>
-            <option value="price-desc">По цене (убывание)</option>
-            <option value="name-asc">По названию (А-Я)</option>
-            <option value="name-desc">По названию (Я-А)</option>
-        </select>
-        <select id="category-select">
-            <option value="all">Все категории</option>
-            </select>
+    <div class="header-controls">
+    <div id="cart-toggle">
+        <span id="cart-icon">🛒</span>
+        <span id="cart-count">0</span>
     </div>
+
+    <select id="category-select">
+        <option value="all">Все категории</option>
+        </select>
+</div>
 
     <div id="products">Загрузка товаров...</div>
 

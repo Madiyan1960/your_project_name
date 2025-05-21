@@ -24,9 +24,6 @@ const categorySelect = document.getElementById('category-select');
 let allProducts = []; // Все загруженные товары из Supabase
 let cart = []; // Текущее состояние корзины, массив объектов { product_data, qty }
 
----
-
-### Инициализация и сохранение данных формы
 
 // Сохраняем введенные данные в localStorage для удобства пользователя
 window.addEventListener("DOMContentLoaded", function () {
@@ -53,9 +50,7 @@ window.addEventListener("DOMContentLoaded", function () {
     });
 });
 
----
 
-### Функции управления корзиной и UI
 
 // Переключение видимости панели корзины
 toggleButton.addEventListener('click', () => {
@@ -205,9 +200,6 @@ cartItemsContainer.addEventListener('click', (event) => {
     }
 });
 
----
-
-### Функции загрузки, рендеринга и фильтрации товаров
 
 // Загрузка товаров из Supabase
 async function loadProducts() {
@@ -296,9 +288,9 @@ if (categorySelect) {
     categorySelect.addEventListener('change', filterProductsByCategory);
 }
 
----
 
-### Отправка заказа
+
+//Отправка заказа
 
 orderForm.onsubmit = async e => {
     e.preventDefault();
@@ -344,15 +336,14 @@ orderForm.onsubmit = async e => {
     }
 };
 
----
 
-### Инициализация приложения
+// Инициализация приложения
 
 loadProducts();
 
----
 
-### Регистрация Service Worker
+
+// Регистрация Service Worker
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')

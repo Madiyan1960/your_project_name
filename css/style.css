@@ -1,344 +1,330 @@
-/* Общие стили */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    background-color: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-header {
-    background-color: #2196F3;
-    color: white;
-    padding: 15px 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-header h1 {
-    margin: 0;
-    font-size: 2.2em;
-}
-
-.header-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap; /* Для адаптивности */
-    gap: 15px; /* Пространство между элементами */
-    margin-top: 10px;
-}
-
-.search-sort-filter {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.search-sort-filter input,
-.search-sort-filter select {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1em;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #333;
-}
-
-#cart-toggle {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1.1em;
-    transition: background-color 0.3s ease;
-}
-
-#cart-toggle:hover {
-    background-color: #45a049;
-}
-
-#cart-toggle img {
-    width: 24px;
-    height: 24px;
-    filter: invert(100%); /* Делаем иконку белой */
-}
-
-#cart-toggle h3 {
-    margin: 0;
-    font-size: 1.1em;
-}
-
-/* Стили для сетки товаров */
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 25px;
-    padding: 20px 0;
-}
-
-.product-card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-    transition: transform 0.2s ease-in-out;
-}
-
-.product-card:hover {
-    transform: translateY(-5px);
-}
-
-.product-card img {
-    max-width: 100%;
-    height: 150px; /* Фиксированная высота для изображений */
-    object-fit: contain; /* Сохраняет пропорции, вмещаясь в рамки */
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.product-name {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin-bottom: 8px;
-}
-
-.product-price {
-    color: #E91E63;
-    font-size: 1.3em;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-.product-card button {
-    background-color: #2196F3;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
-
-.product-card button:hover {
-    background-color: #1976D2;
-}
-
-/* Стили для панели корзины */
-.cart-panel {
-    position: fixed;
-    top: 0;
-    right: -400px; /* Скрыто за пределами экрана */
-    width: 380px;
-    height: 100%;
-    background-color: white;
-    box-shadow: -3px 0 10px rgba(0,0,0,0.2);
-    transition: right 0.3s ease-in-out;
-    padding: 20px;
-    box-sizing: border-box; /* Учитываем padding в ширине */
-    display: flex;
-    flex-direction: column;
-    z-index: 1000;
-}
-
-.cart-panel.open {
-    right: 0; /* Открывается на экран */
-}
-
-.cart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-}
-
-.cart-header h2 {
-    margin: 0;
-    font-size: 1.8em;
-}
-
-.close-button {
-    background: none;
-    border: none;
-    font-size: 2em;
-    cursor: pointer;
-    color: #888;
-    transition: color 0.2s ease;
-}
-
-.close-button:hover {
-    color: #333;
-}
-
-.cart-items {
-    flex-grow: 1; /* Занимает все доступное пространство */
-    overflow-y: auto; /* Прокрутка, если товаров много */
-    margin-bottom: 20px;
-}
-
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px dashed #eee;
-}
-
-.cart-item:last-child {
-    border-bottom: none;
-}
-
-/* НОВЫЕ СТИЛИ ДЛЯ ОТОБРАЖЕНИЯ ИНФОРМАЦИИ О ТОВАРЕ В КОРЗИНЕ */
-.cart-item-info {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column; /* Название и детали в разных строках */
-    align-items: flex-start; /* Выравнивание по левому краю */
-}
-
-.cart-item-name {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin-bottom: 3px;
-}
-
-.cart-item-details {
-    font-size: 0.9em;
-    color: #666;
-}
-
-.cart-item-qty-controls {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.cart-item-qty-controls button {
-    background-color: #ddd;
-    border: 1px solid #ccc;
-    color: #333;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.2s ease;
-}
-
-.cart-item-qty-controls button:hover {
-    background-color: #ccc;
-}
-
-.cart-item-qty-controls div {
-    min-width: 20px; /* Чтобы количество не "прыгало" при изменении цифры */
-    text-align: center;
-    font-weight: bold;
-}
-
-.cart-total {
-    font-size: 1.5em;
-    font-weight: bold;
-    text-align: right;
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-}
-
-/* Стили для формы заказа */
-#orderForm {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-}
-
-#orderForm h3 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #2196F3;
-}
-
-#orderForm input,
-#orderForm textarea {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1em;
+/* Универсальное свойство: применяется ко всем элементам (*), а также к их псевдоэлементам (::before, ::after) */
+/* Это очень важно для предотвращения переполнения и перекрытия элементов. */
+/* Оно говорит браузеру, что padding (внутренний отступ) и border (рамка) */
+/* должны включаться в общую заданную ширину/высоту элемента, а не добавляться к ней. */
+*, *::before, *::after {
     box-sizing: border-box;
 }
 
-#orderForm textarea {
-    resize: vertical;
-    min-height: 80px;
+/* Стили для всего тела документа (фона, базового шрифта) */
+body {
+    font-family: Arial, sans-serif; /* Устанавливает базовый шрифт для всего сайта */
+    margin: 0;                   /* Убирает стандартные внешние отступы браузера вокруг страницы */
+    background: #f9f9f9;         /* Устанавливает светло-серый фон для всей страницы */
 }
 
-#orderForm button {
-    width: 100%;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.2em;
-    transition: background-color 0.3s ease;
+/* Стили для заголовка <h1> */
+h1 {
+    text-align: center; /* Выравнивает текст заголовка по центру */
 }
 
-#orderForm button:hover {
-    background-color: #45a049;
+/* Стили для заголовка магазина (.shop-title) */
+.shop-title {
+    font-family: 'Ваш_Новый_Шрифт', sans-serif; /* Убедитесь, что шрифт подключен */
+    font-size: 2.5em;
+    color: #6a1b9a;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    text-align: left; /* Оставляем выравнивание по левому краю */
+    margin: 25px 0; /* 25 сверху */
+    margin-left: 8px; /* Например, 20 пикселей отступа всего блока от левого края */
 }
 
-.message {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    font-weight: bold;
+/* Контейнер для всех карточек товаров (#products) */
+/* Использует CSS Grid для создания сетки карточек */
+#products {
+    display: grid;                   /* Активирует Grid-раскладку для элемента */
+    grid-template-columns: repeat(3, 1fr); /* Создает 3 колонки, каждая из которых занимает равную долю доступного пространства */
+    row-gap: 20px;                   /* Отступ между строками карточек (вертикальный) */
+    column-gap: 15px;                /* Отступ между колонками карточек (горизонтальный) */
+    max-width: 900px;                /* Максимальная ширина контейнера, чтобы он не растягивался слишком сильно */
+    margin: 0 auto;                  /* Центрирует контейнер по горизонтали (0px сверху/снизу, auto слева/справа) */
+    padding: 10px;                   /* Внутренний отступ внутри контейнера */
 }
 
-/* Адаптивность */
+/* Медиа-запрос: Стили применяются, когда ширина экрана МЕНЬШЕ или РАВНА 768px (для большинства планшетов и телефонов) */
 @media (max-width: 768px) {
-    .header-controls {
-        flex-direction: column;
-        align-items: flex-start;
+    #products {
+        grid-template-columns: repeat(2, 1fr); /* Переключается на 2 колонки для мобильных устройств */
+        row-gap: 8px;   /* Уменьшает вертикальный отступ между карточками */
+        column-gap: 8px; /* Уменьшает горизонтальный отступ между карточками */
+        padding: 5px;   /* Уменьшает внутренний отступ контейнера */
     }
-    .search-sort-filter {
-        width: 100%;
-        flex-direction: column;
-        gap: 5px;
+
+    /* Стили для каждой карточки товара (.product-card) внутри этого медиа-запроса */
+    .product-card {
+        padding: 3px; /* Уменьшает внутренний отступ (padding) внутри самой карточки, делая её компактнее */
     }
-    .search-sort-filter input,
-    .search-sort-filter select {
-        width: 100%;
+
+    /* Стили для изображения внутри карточки (.product-card img) */
+    .product-card img {
+        margin-bottom: 0px; /* Убирает отступ снизу от изображения, прижимая его к названию */
     }
-    #cart-toggle {
-        width: 100%;
-        justify-content: center;
+    
+    /* Стили для названия товара (.product-name) */
+    .product-name {
+        font-size: 0.5em;      /* Уменьшает размер шрифта названия товара */
+        margin: 0px 0 0px 0; /* Убирает все внешние отступы названия товара (сверху, справа, снизу, слева) */
+        line-height: 1.0;      /* Немного уменьшает межстрочный интервал для компактности */
+        min-height: 2.2em;     /* Минимальная высота блока, чтобы название из двух строк помещалось */
     }
-    .cart-panel {
-        width: 100%;
-        right: -100%;
-        box-shadow: none;
+
+    /* Стили для цены товара (.product-price) */
+    .product-price {
+        font-size: 1.5em;    /* Уменьшает размер шрифта цены */
+        margin-bottom: 0px; /* Убирает отступ снизу от цены, прижимая её к кнопке */
     }
-    .cart-panel.open {
-        right: 0;
+
+    /* Стили для кнопки (.button) */
+    button {
+        padding: 3px 5px; /* Уменьшает внутренние отступы кнопки */
+        font-size: 0.65em; /* Уменьшает размер шрифта на кнопке */
+        margin-top: 0px;  /* Убирает отступ сверху от кнопки, прижимая её к цене */
     }
+}
+
+/* Медиа-запрос: Стили применяются, когда ширина экрана МЕНЬШЕ или РАВНА 450px (для очень маленьких телефонов) */
+@media (max-width: 450px) {
+    #products {
+        grid-template-columns: repeat(2, 1fr); /* Остается 2 колонки */
+        row-gap: 5px;   /* Еще больше уменьшает вертикальный отступ */
+        column-gap: 5px; /* Еще больше уменьшает горизонтальный отступ */
+        padding: 2px;   /* Еще больше уменьшает внутренний отступ контейнера */
+    }
+
+    /* Стили для каждой карточки товара (.product-card) */
+    .product-card {
+        padding: 1px; /* Максимально уменьшает внутренний отступ карточки */
+    }
+
+    /* Стили для изображения внутри карточки */
+    .product-card img {
+        margin-bottom: 0px; /* Отступ снизу от изображения */
+    }
+    
+    /* Стили для названия товара */
+    .product-name {
+        font-size: 0.7em;     /* Максимально уменьшает размер шрифта названия */
+        margin: 0px 0 0px 0; /* Отступы названия */
+        line-height: 1.1;
+        min-height: 2.2em;
+    }
+
+    /* Стили для цены товара */
+    .product-price {
+        font-size: 0.65em;    /* Максимально уменьшает размер шрифта цены */
+        margin-bottom: 0px; /* Отступ снизу от цены */
+    }
+
+    /* Стили для кнопки */
+    button {
+        padding: 1px 2px; /* Максимально уменьшает внутренние отступы кнопки */
+        font-size: 0.55em; /* Максимально уменьшает размер шрифта на кнопке */
+        margin-top: 0px;  /* Отступ сверху от кнопки */
+    }
+}
+
+/* Общие стили для каждой отдельной карточки товара (.product-card) */
+/* Эти стили применяются на всех размерах экрана, если не переопределены медиа-запросами */
+.product-card {
+    border: 1px solid black; /* Рамка: 1px толщиной, сплошная, черного цвета */
+    border-radius: 8px;      /* Скругление углов рамки на 8px */
+    padding: 8px;            /* Внутренний отступ (padding) внутри карточки */
+    background: #fff;        /* Белый фон карточки */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Легкая тень под карточкой для объема */
+    text-align: center;      /* Выравнивает текст внутри карточки по центру */
+    display: flex;           /* Активирует Flexbox для содержимого карточки */
+    flex-direction: column;  /* Элементы внутри карточки располагаются вертикально (столбцом) */
+    justify-content: space-between; /* Распределяет пространство между элементами так, */
+                                   /* чтобы первый (изображение) был сверху, последний (кнопка) снизу, */
+                                   /* а остальное равномерно распределялось между ними */
+    height: 100%;            /* Карточка занимает 100% высоты своей ячейки в Grid-сетке */
+}
+
+/* Общие стили для изображения внутри карточки (.product-card img) */
+.product-card img {
+    width: 50%;             /* Изображение занимает всю доступную ширину карточки */
+    aspect-ratio: 1 / 1;     /* Делает изображение квадратным (соотношение сторон 1:1) */
+    object-fit: cover;       /* Обрезает изображение, чтобы оно полностью заполнило квадрат, сохраняя пропорции */
+    display: block;          /* Делает изображение блочным элементом */
+    margin: 0 auto 0px auto; /* Центрирует изображение по горизонтали, 0px сверху/снизу/справа */
+    border-radius: 4px;      /* Слегка скругляет углы изображения */
+}
+
+/* Общие стили для названия товара (.product-name) */
+.product-name {
+    font-weight: normal;       /* Жирный шрифт */
+    margin: 2px 0 3px 0;     /* Внешние отступы: 5px сверху, 0px справа, 3px снизу, 0px слева */
+    font-size: 0.9em;          /* Базовый размер шрифта (относительно родителя) */
+    color: #333;             /* Темно-серый цвет текста */
+    overflow: hidden;        /* Скрывает текст, который выходит за границы элемента */
+    text-overflow: ellipsis; /* Добавляет многоточие (...) если текст обрезается */
+    display: -webkit-box;    /* Включает Flexbox для текста (для работы -webkit-line-clamp) */
+    -webkit-line-clamp: 2;   /* Ограничивает текст 2 строками (работает только в WebKit-браузерах, например Chrome, Safari) */
+    -webkit-box-orient: vertical; /* Ориентация Flexbox-бокса по вертикали */
+    min-height: 2.4em;       /* Минимальная высота блока названия, чтобы всегда было место для 2 строк */
+}
+
+/* Общие стили для цены товара (.product-price) */
+.product-price {
+    font-weight: bold; 
+    color: #555;             /* Средне-серый цвет текста */
+    margin-bottom: 1px;      /* Внешний отступ снизу от цены */
+    font-size: 1.0em;        /* Размер шрифта цены */
+}
+
+/* Общие стили для кнопки (.button) */
+button {
+    background: #2a9d8f;     /* Цвет фона кнопки: бирюзовый */
+    color: white;            /* Цвет текста на кнопке: белый */
+    border: none;            /* Убирает рамку кнопки */
+    padding: 6px 10px;       /* Внутренние отступы кнопки: 6px сверху/снизу, 10px слева/справа */
+    border-radius: 4px;      /* Скругление углов кнопки */
+    cursor: pointer;         /* Изменяет курсор на "указатель" при наведении */
+    font-size: 0.9em;        /* Размер шрифта на кнопке */
+    margin-top: 5px;         /* Внешний отступ сверху от кнопки */
+}
+
+/* Стили при наведении на кнопку (hover-эффект) */
+button:hover {
+    background: #21867a; /* Цвет фона кнопки при наведении: более темный бирюзовый */
+}
+
+/* Стили для иконки/кнопки корзины (#cart-toggle) */
+#cart-toggle {
+    position: fixed;         /* Фиксирует элемент на экране, чтобы он оставался на месте при прокрутке */
+    top: 10px;               /* Отступ от верхнего края экрана */
+    right: 10px;             /* Отступ от правого края экрана */
+    display: flex;           /* Активирует Flexbox */
+    flex-direction: column;  /* Элементы внутри располагаются вертикально */
+    align-items: center;     /* Выравнивает элементы по центру по горизонтали */
+    background: #ffeb3b;     /* Цвет фона: ярко-желтый */
+    border-radius: 8px;      /* Скругление углов */
+    padding: 3px;            /* Внутренний отступ */
+    cursor: pointer;         /* Курсор-указатель */
+    border: none;            /* Без рамки */
+    gap: 4px;                /* Отступ между элементами внутри кнопки */
+    z-index: 1001;           /* Приоритет отображения: поверх других элементов */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Тень для кнопки */
+}
+
+/* Стили для изображения внутри кнопки корзины (#cart-toggle img) */
+#cart-toggle img {
+    width: 40px;     /* Ширина изображения */
+    height: 40px;    /* Высота изображения */
+    display: block;  /* Делает изображение блочным элементом */
+}
+
+/* Стили для текста "Корзина" под иконкой корзины (#cart-text) */
+#cart-text {
+    font-size: 12px;   /* Размер шрифта */
+    color: black;      /* Цвет текста */
+    font-weight: bold; /* Жирный шрифт */
+}
+
+/* Стили для самой корзины (боковая панель) (#cart) */
+#cart {
+    width: 90vw;             /* Ширина корзины: 90% от ширины вьюпорта */
+    max-width: 320px;        /* Максимальная ширина корзины */
+    position: fixed;         /* Фиксирует корзину на экране */
+    right: 10px;             /* Отступ от правого края */
+    top: 80px;               /* Отступ от верхнего края (ниже кнопки корзины) */
+    max-height: 85vh;        /* Максимальная высота корзины: 85% от высоты вьюпорта */
+    overflow-y: auto;        /* Добавляет полосу прокрутки по вертикали, если содержимое не помещается */
+    background: white;       /* Белый фон */
+    border: 1px solid #ccc;  /* Светло-серая рамка */
+    border-radius: 8px;      /* Скругление углов */
+    padding: 10px;           /* Внутренний отступ */
+    box-shadow: 0 0 15px rgba(0,0,0,0.2); /* Тень для корзины */
+    font-size: 14px;         /* Базовый размер шрифта для содержимого корзины */
+    transition: transform 0.3s ease; /* Плавный переход для свойства transform (для анимации открытия/закрытия) */
+    transform: translateX(100%);     /* Начальное состояние: корзина сдвинута на 100% вправо (скрыта) */
+    z-index: 1000;           /* Приоритет отображения */
+}
+
+/* Стили для открытой корзины (#cart.open) */
+#cart.open {
+    transform: translateX(0); /* Применяется, когда к корзине добавлен класс 'open' - сдвигает её на 0% (делает видимой) */
+}
+
+/* Стили для заголовка <h2> внутри корзины */
+#cart h2 {
+    margin-top: 0;      /* Убирает верхний отступ заголовка */
+    text-align: center; /* Выравнивает заголовок по центру */
+}
+
+/* Стили для каждого элемента в корзине (.cart-item) */
+.cart-item {
+    display: flex;             /* Активирует Flexbox */
+    justify-content: space-between; /* Распределяет пространство между элементами равномерно (название слева, количество справа) */
+    align-items: center;       /* Выравнивает элементы по центру по вертикали */
+    margin-bottom: 6px;        /* Отступ снизу от элемента корзины */
+    border-bottom: 1px solid #eee; /* Тонкая светло-серая линия внизу элемента */
+    padding-bottom: 5px;       /* Внутренний отступ снизу */
+}
+
+/* Стили для названия товара в корзине (.cart-item-name) */
+.cart-item-name {
+    flex: 1 1 auto; /* Позволяет элементу растягиваться и сжиматься, занимая доступное пространство */
+}
+
+/* Стили для блока количества товара в корзине (.cart-item-qty) */
+.cart-item-qty {
+    display: flex;         /* Активирует Flexbox */
+    align-items: center;   /* Выравнивает элементы по центру по вертикали */
+    gap: 5px;              /* Отступ между элементами (кнопки +/- и число) */
+}
+
+/* Стили для кнопок +/- количества товара в корзине (.cart-item-qty button) */
+.cart-item-qty button {
+    width: 26px;        /* Ширина кнопки */
+    height: 26px;       /* Высота кнопки */
+    font-weight: bold;  /* Жирный шрифт */
+    padding: 0;         /* Убирает внутренний отступ */
+    line-height: 1;     /* Межстрочный интервал (для лучшего вертикального центрирования текста) */
+    border-radius: 4px; /* Скругление углов */
+}
+
+/* Стили для общей суммы заказа (#total) */
+#total {
+    font-weight: bold;  /* Жирный шрифт */
+    text-align: right;  /* Выравнивание по правому краю */
+    margin-top: 10px;   /* Отступ сверху */
+}
+
+/* Стили для формы заказа (#orderForm) */
+#orderForm {
+    margin-top: 10px; /* Отступ сверху */
+}
+
+/* Стили для полей ввода (input) и текстовых областей (textarea) внутри формы заказа */
+#orderForm input,
+#orderForm textarea {
+    width: 100%;             /* Занимает всю доступную ширину */
+    box-sizing: border-box;  /* padding и border включаются в ширину */
+    margin-bottom: 8px;      /* Отступ снизу */
+    padding: 6px;            /* Внутренний отступ */
+    font-size: 14px;         /* Размер шрифта */
+    border: 1px solid #ccc;  /* Рамка */
+    border-radius: 4px;      /* Скругление углов */
+}
+
+/* Стили для кнопки отправки в форме заказа (#orderForm button) */
+#orderForm button {
+    width: 100%;       /* Занимает всю ширину */
+    font-size: 16px;   /* Размер шрифта */
+}
+
+/* Стили для сообщения об успешной отправке (#message) */
+#message {
+    text-align: center; /* Выравнивание по центру */
+    color: green;       /* Зеленый цвет текста */
+    margin-top: 8px;    /* Отступ сверху */
+}
+
+/* Стили для заголовка <h3> (используется для списка покупок в корзине) */
+h3 {
+    text-align: left;    /* Выравнивание по левому краю */
+    margin-top: 5px;     /* Отступ сверху */
+    font-size: 24px;     /* Размер шрифта */
+    color: #ed2d5a;      /* Красный цвет текста */
 }

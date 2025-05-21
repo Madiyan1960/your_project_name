@@ -173,7 +173,7 @@ function updateCartUI() {
                 <button class="dec" data-id="${item.id}">-</button>
                 <span class="qty">${item.qty}</span>
                 <button class="inc" data-id="${item.id}">+</button>
-                <button class="remove-item" data-id="${item.id}">X</button>
+               
             </div>
         `;
         cartItemsContainer.appendChild(div);

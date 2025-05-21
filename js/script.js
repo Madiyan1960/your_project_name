@@ -162,14 +162,11 @@ function updateCartUI() {
         const div = document.createElement('div');
         div.className = 'cart-item';
         div.innerHTML = `
-           <span class="cart-item-summary">
-                ${item.name} ${item.qty} x ${item.price} ₸ ${item.unit ? `(${item.unit})` : ''} = ${totalItemPrice} ₸
-            </span>
-            <div class="cart-item-actions">
+          <div class="cart-item-name">${item.name} (${item.price} ₸)</div>
+            <div class="cart-item-qty">
                 <button class="dec" data-id="${item.id}">-</button>
-                <span class="qty">${item.qty}</span>
+                <div>${item.qty}</div>
                 <button class="inc" data-id="${item.id}">+</button>
-                <button class="remove-item" data-id="${item.id}">X</button>
             </div>
         `;
         cartItemsContainer.appendChild(div);

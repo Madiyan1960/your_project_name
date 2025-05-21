@@ -18,8 +18,8 @@ const toggleButton = document.getElementById('cart-toggle');
 // Получаем элемент для обновления счетчика уникальных товаров в корзине
 const cartCountElement = document.getElementById('cart-count');
 
-const searchInput = document.getElementById('search-input');
-const sortSelect = document.getElementById('sort-select');
+//const searchInput = document.getElementById('search-input');
+//const sortSelect = document.getElementById('sort-select');
 const categorySelect = document.getElementById('category-select');
 
 let allProducts = []; // Все загруженные товары из Supabase

@@ -1,67 +1,57 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Онлайн-магазин</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="images/icons/icon-192x192.png">
-    <meta name="theme-color" content="#2196F3"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Магазин на Supabase</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#2a9d8f" />
+    <link rel="icon" href="icon-192.png" />
+
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>Мой Магазин</h1>
-            <div class="header-controls">
-                <div class="search-sort-filter">
-                    <input type="text" id="search-input" placeholder="Поиск товаров...">
-                    <select id="sort-select">
-                        <option value="default">Сортировка</option>
-                        <option value="price-asc">По цене (возр.)</option>
-                        <option value="price-desc">По цене (убыв.)</option>
-                        <option value="name-asc">По названию (А-Я)</option>
-                        <option value="name-desc">По названию (Я-А)</option>
-                    </select>
-                    <select id="category-select">
-                        <option value="all">Все категории</option>
-                        </select>
-                </div>
 
-                <button id="cart-toggle" title="Открыть/закрыть корзину">
-                    <img id="cart-icon" src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Корзина" />
-                    <h3>🛒 Корзина (<span id="cart-count">0</span>)</h3>
-                </button>
-            </div>
-        </div>
-    </header>
+    <h3 class="shop-title">«Меруерт»</h3>
 
-    <main class="container">
-        <div id="products" class="product-grid">
-            Загрузка товаров...
-        </div>
-    </main>
-
-    <div id="cart" class="cart-panel">
-        <div class="cart-header">
-            <h2>Ваша Корзина</h2>
-            <button id="close-cart" class="close-button">&times;</button>
-        </div>
-        <div id="cartItems" class="cart-items">
-            Корзина пуста
-        </div>
-        <div id="total" class="cart-total">Итого: 0 ₸</div>
-
-        <form id="orderForm">
-            <h3>Оформление заказа</h3>
-            <input type="text" id="name" placeholder="Ваше имя" required>
-            <input type="tel" id="phone" placeholder="Ваш телефон" required>
-            <textarea id="address" placeholder="Адрес доставки" required></textarea>
-            <button type="submit">Заказать</button>
-            <div id="message" class="message"></div>
-        </form>
+    <div class="controls-container">
+        <input type="text" id="search-input" placeholder="Поиск по названию...">
+        <select id="sort-select">
+            <option value="default">Сортировка</option>
+            <option value="price-asc">По цене (возрастание)</option>
+            <option value="price-desc">По цене (убывание)</option>
+            <option value="name-asc">По названию (А-Я)</option>
+            <option value="name-desc">По названию (Я-А)</option>
+        </select>
+        <select id="category-select">
+            <option value="all">Все категории</option>
+            </select>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <div id="products">Загрузка товаров...</div>
+
+    <button id="cart-toggle" title="Открыть/закрыть корзину">
+        
+        
+        <h3>🛒 (<span id="cart-count">0</span>)</h3>
+    </button>
+
+    <div id="cart">
+        
+        <h2>Корзина</h2>
+        <div id="cartItems">Корзина пуста</div>
+        <div id="total">Итого: 0</div>
+        <form id="orderForm">
+            <input type="text" id="name" placeholder="Имя" required />
+            <input type="tel" id="phone" placeholder="Телефон" required pattern="^\+?\d{10,15}$" title="Введите корректный номер телефона" />
+            <input id="address" type="text" placeholder="Адрес проживания" required autocomplete="on" />
+            <button type="submit">Отправить заказ</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script src="js/script.js" type="module"></script>
+
 </body>
 </html>

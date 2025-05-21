@@ -153,7 +153,7 @@ h1 {
         font-size: 1em;
     }
     #products {
-        margin-top: 110px; /* Адаптируем отступ для мобильной шапки */
+        margin-top: 100px; /* Адаптируем отступ для мобильной шапки */
         grid-template-columns: repeat(2, 1fr);
         row-gap: 8px;
         column-gap: 8px;

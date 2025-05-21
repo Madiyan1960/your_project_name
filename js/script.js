@@ -3,8 +3,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = 'https://kpefeonxvgnfpgevkcwy.supabase.co';
 // !!! ВНИМАНИЕ: ЭТОТ КЛЮЧ УСТАРЕЛ !!!
 // ОЧЕНЬ РЕКОМЕНДУЕТСЯ ЗАМЕНИТЬ ЕГО НА ВАШ АКТУАЛЬНЫЙ anon (public) KEY ИЗ ПАНЕЛИ SUPABASE
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NzIzNjgwOCwiZXhwIjoyMDYyODEyODA4fQ.vmja_c7pb1FYViIslL0CACrXpqUJ9n2kgw6_oG5ZSUA
-';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NzIzNjgwOCwiZXhwIjoyMDYyODEyODA4fQ.vmja_c7pb1FYViIslL0CACrXpqUJ9n2kgw6_oG5ZSUA';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

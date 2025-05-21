@@ -15,7 +15,10 @@ h1 {
     text-align: center;
 }
 
-/* --- СТИЛИ ДЛЯ ФИКСИРОВАННОЙ ШАПКИ --- */
+---
+
+### Стили для фиксированной шапки
+
 .header-fixed-container {
     position: fixed; /* Фиксируем элемент на экране */
     top: 0;          /* Прикрепляем к верхнему краю */
@@ -29,7 +32,7 @@ h1 {
     /* Используем Flexbox для расположения основных строк шапки (вертикально) */
     display: flex;
     flex-direction: column; /* Элементы внутри будут располагаться друг под другом */
-    align-items: center; /* Центрируем содержимое по горизонтали (для search-sort-filter) */
+    align-items: center; /* Центрируем содержимое по горизонтали (это важно для фильтра) */
 }
 
 /* Контейнер для верхней строки шапки (название и корзина) */
@@ -54,12 +57,16 @@ h1 {
 
 /* Стили для контейнера фильтра (.search-sort-filter) внутри фиксированной шапки */
 .search-sort-filter {
-    /* Эти стили уже центрируют select элемент внутри себя, и так как родитель header-fixed-container центрирует свои элементы, этот div будет по центру */
-    display: flex;
-    justify-content: center;
+    /* Поскольку родитель (`.header-fixed-container`) уже центрирует свои элементы (`align-items: center;`),
+       и так как `search-sort-filter` является блочным элементом по умолчанию,
+       он будет центрирован. Достаточно задать ему ширину `fit-content`
+       или `max-content`, чтобы он не растягивался на всю ширину и центрировался по содержимому. */
+    display: flex; /* Используем flexbox внутри, чтобы центрировать сам select */
+    justify-content: center; /* Центрируем select */
     align-items: center;
-    width: 100%; /* Убедимся, что занимает всю доступную ширину */
-    margin: 0; /* Убираем лишние отступы */
+    width: 100%; /* Занимает всю ширину, а select внутри него центрируется */
+    /* margin: 0 auto; - не нужно, так как flex-контейнер родителя центрирует его */
+    margin: 0; /* Убедитесь, что нет лишних отступов */
 }
 
 /* Стили для самого выпадающего списка категорий (#category-select) */
@@ -69,6 +76,9 @@ h1 {
     border-radius: 4px;
     font-size: 1em;
     cursor: pointer;
+    /* Если вы хотите, чтобы сам select элемент был очень узким, используйте: */
+    /* width: fit-content; */
+    /* max-width: 100%; */
 }
 
 /* Стили для кнопки корзины (#cart-toggle) внутри фиксированной шапки */
@@ -85,7 +95,6 @@ h1 {
     justify-content: center;
     gap: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    /* Здесь position: static; не нужен, так как он не фиксирован напрямую, а его родительский div.header-top-row управляет его позицией */
 }
 
 #cart-toggle h3 {
@@ -106,7 +115,9 @@ h1 {
     vertical-align: middle;
 }
 
-/* --- ОСТАЛЬНЫЕ СТИЛИ --- */
+---
+
+### Остальные стили
 
 /* Отступ для основного контента, чтобы он не был скрыт под шапкой */
 /* Вам нужно будет настроить это значение, исходя из ВЫСОТЫ вашей фиксированной шапки. */
@@ -123,26 +134,16 @@ h1 {
     padding: 10px;
 }
 
-/* Медиа-запросы (оставляем без изменений) */
+/* Медиа-запросы (адаптивность) */
 @media (max-width: 768px) {
-    #products {
-        grid-template-columns: repeat(2, 1fr);
-        row-gap: 8px;
-        column-gap: 8px;
-        padding: 5px;
-    }
-    .product-card { padding: 3px; }
-    .product-card img { margin-bottom: 0px; }
-    .product-name { font-size: 0.5em; margin: 0px 0 0px 0; line-height: 1.0; min-height: 2.2em; }
-    .product-price { font-size: 1.5em; margin-bottom: 0px; }
-    button { padding: 3px 5px; font-size: 0.65em; margin-top: 0px; }
-
-    /* Для мобильных устройств, если шапка слишком широкая, можно уменьшить отступы */
     .header-fixed-container {
         padding: 5px 10px;
     }
+    .header-top-row {
+        margin-bottom: 5px;
+    }
     .shop-title {
-        font-size: 1.8em; /* Меньший размер для мобильных */
+        font-size: 1.8em;
     }
     #cart-toggle {
         padding: 5px 10px;
@@ -153,27 +154,21 @@ h1 {
     #cart-count {
         font-size: 1em;
     }
-    .header-top-row {
-        margin-bottom: 5px;
-    }
     #products {
         margin-top: 100px; /* Адаптируем отступ для мобильной шапки */
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 8px;
+        column-gap: 8px;
+        padding: 5px;
     }
+    .product-card { padding: 3px; }
+    .product-card img { margin-bottom: 0px; }
+    .product-name { font-size: 0.5em; margin: 0px 0 0px 0; line-height: 1.0; min-height: 2.2em; }
+    .product-price { font-size: 1.5em; margin-bottom: 0px; }
+    button { padding: 3px 5px; font-size: 0.65em; margin-top: 0px; }
 }
 
 @media (max-width: 450px) {
-    #products {
-        grid-template-columns: repeat(2, 1fr);
-        row-gap: 5px;
-        column-gap: 5px;
-        padding: 2px;
-    }
-    .product-card { padding: 1px; }
-    .product-card img { margin-bottom: 0px; }
-    .product-name { font-size: 0.7em; margin: 0px 0 0px 0; line-height: 1.1; min-height: 2.2em; }
-    .product-price { font-size: 0.65em; margin-bottom: 0px; }
-    button { padding: 1px 2px; font-size: 0.55em; margin-top: 0px; }
-
     .shop-title {
         font-size: 1.5em;
     }
@@ -188,7 +183,16 @@ h1 {
     }
     #products {
         margin-top: 80px; /* Ещё уменьшаем отступ для очень маленьких экранов */
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 5px;
+        column-gap: 5px;
+        padding: 2px;
     }
+    .product-card { padding: 1px; }
+    .product-card img { margin-bottom: 0px; }
+    .product-name { font-size: 0.7em; margin: 0px 0 0px 0; line-height: 1.1; min-height: 2.2em; }
+    .product-price { font-size: 0.65em; margin-bottom: 0px; }
+    button { padding: 1px 2px; font-size: 0.55em; margin-top: 0px; }
 }
 
 /* Общие стили для каждой отдельной карточки товара (.product-card) */

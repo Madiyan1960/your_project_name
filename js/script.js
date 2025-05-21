@@ -292,7 +292,7 @@ function renderProducts(productsToDisplay) {
 // Обработчики событий для поля поиска, сортировки и категории
 //searchInput.addEventListener('input', applyFiltersAndSort);
 //sortSelect.addEventListener('change', applyFiltersAndSort);
-categorySelect.addEventListener('change', applyFiltersAndSort);
+//categorySelect.addEventListener('change', applyFiltersAndSort);
 
 // --- Отправка заказа ---
 

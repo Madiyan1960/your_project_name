@@ -26,30 +26,40 @@ h1 {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Легкая тень */
     z-index: 1000;   /* Убедимся, что шапка всегда поверх другого контента */
 
-    /* Используем Flexbox для расположения элементов внутри шапки */
+    /* Используем Flexbox для расположения основных строк шапки (вертикально) */
     display: flex;
-    justify-content: space-between; /* Распределяем элементы: название слева, фильтр по центру, корзина справа */
-    align-items: center; /* Выравниваем по центру по вертикали */
+    flex-direction: column; /* Элементы внутри будут располагаться друг под другом */
+    align-items: center; /* Центрируем содержимое по горизонтали (для search-sort-filter) */
+}
+
+/* Контейнер для верхней строки шапки (название и корзина) */
+.header-top-row {
+    display: flex;
+    justify-content: space-between; /* Распределяем название и корзину по краям */
+    align-items: center;
+    width: 100%; /* Занимает всю ширину родительского контейнера */
+    margin-bottom: 10px; /* Отступ между верхней и нижней строкой шапки */
 }
 
 /* Стили для заголовка магазина (.shop-title) внутри фиксированной шапки */
 .shop-title {
-    font-family: 'Pacifico', cursive; /* Используем Pacifico, так как вы его импортировали */
+    font-family: 'Pacifico', cursive;
     font-size: 2.5em;
-    color: #2a9d8f; /* Изменил цвет на бирюзовый, чтобы соответствовал кнопкам */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Немного уменьшил тень */
-    margin: 0; /* Убираем стандартные маржины h3, так как Flexbox их сам распределит */
+    color: #2a9d8f;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 0; /* Убираем стандартные маржины h3 */
     padding: 0;
     white-space: nowrap; /* Предотвращает перенос текста на новую строку */
 }
 
 /* Стили для контейнера фильтра (.search-sort-filter) внутри фиксированной шапки */
 .search-sort-filter {
+    /* Эти стили уже центрируют select элемент внутри себя, и так как родитель header-fixed-container центрирует свои элементы, этот div будет по центру */
     display: flex;
-    justify-content: center; /* Центрируем select внутри этого flex контейнера */
+    justify-content: center;
     align-items: center;
-    flex-grow: 1; /* Позволяем контейнеру фильтра занимать доступное пространство, центрируя select */
-    margin: 0 20px; /* Отступы от заголовка и корзины */
+    width: 100%; /* Убедимся, что занимает всю доступную ширину */
+    margin: 0; /* Убираем лишние отступы */
 }
 
 /* Стили для самого выпадающего списка категорий (#category-select) */
@@ -70,52 +80,50 @@ h1 {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    display: flex; /* Для выравнивания иконки и счетчика */
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px; /* Промежуток между иконкой и счетчиком */
+    gap: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    position: static; /* Важно: убираем position:fixed, т.к. родитель уже фиксирован */
-    top: auto; /* Сбрасываем старые значения */
-    right: auto; /* Сбрасываем старые значения */
-    z-index: auto; /* Сбрасываем старые значения */
+    /* Здесь position: static; не нужен, так как он не фиксирован напрямую, а его родительский div.header-top-row управляет его позицией */
 }
 
 #cart-toggle h3 {
-    margin: 0; /* Убираем стандартный маржин h3 внутри кнопки */
+    margin: 0;
     display: flex;
     align-items: center;
     gap: 5px;
-    color: white; /* Чтобы текст внутри h3 был белым */
+    color: white;
 }
 
 #cart-icon {
-    font-size: 1.8em; /* Размер иконки */
+    font-size: 1.8em;
     vertical-align: middle;
 }
 
 #cart-count {
-    font-size: 1.2em; /* Размер счетчика */
+    font-size: 1.2em;
     vertical-align: middle;
 }
 
-/* --- ОСТАЛЬНЫЕ СТИЛИ (НЕ ПОДВЕРЖЕННЫЕ ИЗМЕНЕНИЯМ ДЛЯ ФИКСИРОВАННОЙ ШАПКИ) --- */
+/* --- ОСТАЛЬНЫЕ СТИЛИ --- */
 
 /* Отступ для основного контента, чтобы он не был скрыт под шапкой */
-/* Вам нужно будет настроить это значение, исходя из высоты вашей фиксированной шапки */
+/* Вам нужно будет настроить это значение, исходя из ВЫСОТЫ вашей фиксированной шапки. */
+/* Примерная высота двух строк шапки составит около 110-120px */
 #products {
-    margin-top: 80px; /* Пример: высота вашей шапки примерно 60-70px, плюс отступы */
+    margin-top: 130px; /* Увеличил отступ, чтобы учесть две строки в шапке */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     row-gap: 20px;
     column-gap: 15px;
     max-width: 900px;
-    margin-left: auto; /* Центрируем #products */
-    margin-right: auto; /* Центрируем #products */
+    margin-left: auto;
+    margin-right: auto;
     padding: 10px;
 }
 
-/* Медиа-запросы (оставляем без изменений, они выглядят корректно) */
+/* Медиа-запросы (оставляем без изменений) */
 @media (max-width: 768px) {
     #products {
         grid-template-columns: repeat(2, 1fr);
@@ -128,6 +136,29 @@ h1 {
     .product-name { font-size: 0.5em; margin: 0px 0 0px 0; line-height: 1.0; min-height: 2.2em; }
     .product-price { font-size: 1.5em; margin-bottom: 0px; }
     button { padding: 3px 5px; font-size: 0.65em; margin-top: 0px; }
+
+    /* Для мобильных устройств, если шапка слишком широкая, можно уменьшить отступы */
+    .header-fixed-container {
+        padding: 5px 10px;
+    }
+    .shop-title {
+        font-size: 1.8em; /* Меньший размер для мобильных */
+    }
+    #cart-toggle {
+        padding: 5px 10px;
+    }
+    #cart-icon {
+        font-size: 1.5em;
+    }
+    #cart-count {
+        font-size: 1em;
+    }
+    .header-top-row {
+        margin-bottom: 5px;
+    }
+    #products {
+        margin-top: 100px; /* Адаптируем отступ для мобильной шапки */
+    }
 }
 
 @media (max-width: 450px) {
@@ -142,6 +173,22 @@ h1 {
     .product-name { font-size: 0.7em; margin: 0px 0 0px 0; line-height: 1.1; min-height: 2.2em; }
     .product-price { font-size: 0.65em; margin-bottom: 0px; }
     button { padding: 1px 2px; font-size: 0.55em; margin-top: 0px; }
+
+    .shop-title {
+        font-size: 1.5em;
+    }
+    #cart-toggle {
+        padding: 3px 8px;
+    }
+    #cart-icon {
+        font-size: 1.2em;
+    }
+    #cart-count {
+        font-size: 0.8em;
+    }
+    #products {
+        margin-top: 80px; /* Ещё уменьшаем отступ для очень маленьких экранов */
+    }
 }
 
 /* Общие стили для каждой отдельной карточки товара (.product-card) */
@@ -211,7 +258,7 @@ button:hover {
 #cart {
     width: 90vw;
     max-width: 320px;
-    position: fixed; /* Фиксирует корзину на экране */
+    position: fixed;
     right: 10px;
     top: 80px; /* Убедитесь, что она начинается ниже фиксированной шапки */
     max-height: 85vh;
@@ -224,7 +271,7 @@ button:hover {
     font-size: 14px;
     transition: transform 0.3s ease;
     transform: translateX(100%);
-    z-index: 1001; /* Приоритет отображения: поверх шапки */
+    z-index: 1001;
 }
 
 /* Стили для открытой корзины (#cart.open) */
@@ -232,7 +279,7 @@ button:hover {
     transform: translateX(0);
 }
 
-/* Стили для заголовка <h2> внутри корзины */
+/* Стили для заголовка 2 (в корзине) */
 #cart h2 {
     margin-top: 0;
     text-align: center;
@@ -254,7 +301,6 @@ button:hover {
 }
 
 /* Стили для блока количества товара в корзине (.cart-item-qty-controls) */
-/* Переименовал с .cart-item-qty, чтобы избежать конфликтов и быть точнее */
 .cart-item-qty-controls {
     display: flex;
     align-items: center;
@@ -318,5 +364,5 @@ button:hover {
     font-size: 1.5em;
     cursor: pointer;
     color: #333;
-    z-index: 1002; /* Выше чем корзина и шапка */
+    z-index: 1002;
 }

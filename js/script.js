@@ -162,7 +162,7 @@ function updateCartUI() {
         const div = document.createElement('div');
         div.className = 'cart-item';
         div.innerHTML = `
-          <div class="cart-item-name">${item.name} ${item.price} ₸х ${item.qty}</div>
+          <div class="cart-item-name">${item.name} ${item.price} ₸ х ${item.qty}${item.total} </div>
             <div class="cart-item-qty">
                 <button class="dec" data-id="${item.id}">-</button>
                 <div>${item.qty}</div>

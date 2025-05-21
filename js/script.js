@@ -1,11 +1,12 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://kpefeonxvgnfpgevkcwy.supabase.co';
-// !!! ВНИНИЕ: ЭТОТ КЛЮЧ УСТАРЕЛ !!!
+// !!! ВНИМАНИЕ: ЭТОТ КЛЮЧ УСТАРЕЛ !!!
 // ОЧЕНЬ РЕКОМЕНДУЕТСЯ ЗАМЕНИТЬ ЕГО НА ВАШ АКТУАЛЬНЫЙ anon (public) KEY ИЗ ПАНЕЛИ SUPABASE
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY4MDgsImV4cCI6MjA2MjgxMjgwOH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlZ29ueHZnZmV2a2N3eSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzQ3MjM2ODAzLCJleHAiOjIwNjI4MTI4MDN9.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys'; // ОБНОВИТЕ ЭТОТ КЛЮЧ НА АКТУАЛЬНЫЙ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 // Получаем ссылки на элементы DOM
 const productsContainer = document.getElementById('products');
 const cartItemsContainer = document.getElementById('cartItems');
@@ -14,16 +15,16 @@ const orderForm = document.getElementById('orderForm');
 const messageDiv = document.getElementById('message');
 const cartPanel = document.getElementById('cart');
 const toggleButton = document.getElementById('cart-toggle');
-const cartCountElement = document.getElementById('cart-count'); // Элемент для обновления счетчика уникальных товаров
-const closeCartButton = document.getElementById('close-cart'); // Кнопка закрытия корзины
+// Получаем элемент для обновления счетчика уникальных товаров в корзине
+const cartCountElement = document.getElementById('cart-count');
+const closeCartButton = document.getElementById('close-cart'); // Убедитесь, что у вас есть кнопка с id="close-cart" в HTML
 
-// Переменные для категорий (возвращаем их)
-const categorySelect = document.getElementById('category-select');
+// Переменные для поиска, сортировки и категорий полностью удалены, так как эта функциональность убрана.
 
 let allProducts = []; // Все загруженные товары из Supabase
 let cart = []; // Текущее состояние корзины, массив объектов { product_data, qty }
 
-// Инициализация и сохранение данных формы
+// --- Инициализация и сохранение данных формы ---
 // Сохраняем введенные данные в localStorage для удобства пользователя
 window.addEventListener("DOMContentLoaded", function () {
     const nameInput = document.getElementById("name");
@@ -49,21 +50,24 @@ window.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Функции управления корзиной и UI
+// --- Функции управления корзиной и UI ---
 
 // Переключение видимости панели корзины
 toggleButton.addEventListener('click', () => {
     cartPanel.classList.toggle('open');
 });
 
-// Закрытие панели корзины по кнопке (если кнопка существует)
-if (closeCartButton) {
+// Закрытие панели корзины по кнопке
+if (closeCartButton) { // Проверка, что кнопка существует
     closeCartButton.addEventListener('click', () => {
         cartPanel.classList.remove('open');
     });
 }
 
+
 // Добавление товара в корзину
+// Этот товар добавляется только один раз, если его нет в корзине.
+// Если он уже есть, его количество не изменяется этой функцией.
 function addToCart(productId) {
     const product = allProducts.find(p => p.id === productId);
     if (!product) {
@@ -78,11 +82,12 @@ function addToCart(productId) {
         console.log(`Товар "${product.name}" добавлен в корзину.`);
     } else {
         // Если товар УЖЕ есть в корзине, ничего не делаем с его количеством.
+        // Количество можно будет изменить только из самой корзины (+/- кнопки).
         console.log(`Товар "${product.name}" уже в корзине. Количество не изменено.`);
     }
 
-    updateCartUI();
-    saveCartToLocalStorage();
+    updateCartUI();      // Обновляем пользовательский интерфейс корзины
+    saveCartToLocalStorage(); // Сохраняем текущее состояние корзины в localStorage
 }
 
 // Анимация "товар летит в корзину"
@@ -101,10 +106,10 @@ function flyToCart(imgElement) {
     imgClone.style.left = imgRect.left + 'px';
     imgClone.style.top = imgRect.top + 'px';
     imgClone.style.width = imgRect.width + 'px';
-    imgClone.style.height = imgRect.height + 'px';
+    imgClone.style.height = imgRect.height + 'px'; // Добавим высоту
     imgClone.style.transition = 'all 0.8s ease-in-out';
-    imgClone.style.borderRadius = '50%';
-    imgClone.style.objectFit = 'cover';
+    imgClone.style.borderRadius = '50%'; // Сделаем круглым
+    imgClone.style.objectFit = 'cover'; // Обрезка изображения, чтобы заполнить круг
 
     document.body.appendChild(imgClone);
 
@@ -112,19 +117,21 @@ function flyToCart(imgElement) {
         imgClone.style.left = cartRect.left + 'px';
         imgClone.style.top = cartRect.top + 'px';
         imgClone.style.width = '20px';
-        imgClone.style.height = '20px';
+        imgClone.style.height = '20px'; // И высоту
         imgClone.style.opacity = '0.5';
     });
 
     setTimeout(() => {
-        imgClone.remove();
+        imgClone.remove(); // Удаляем клон после завершения анимации
     }, 800);
 }
 
 // Обновление пользовательского интерфейса корзины (отображение товаров, общей суммы и счетчика)
 function updateCartUI() {
+    // Рассчитываем количество УНИКАЛЬНЫХ товаров в корзине (просто длина массива cart)
     const totalUniqueItemsInCart = cart.length;
 
+    // Обновляем счетчик на кнопке корзины
     if (cartCountElement) {
         cartCountElement.textContent = totalUniqueItemsInCart;
     } else {
@@ -137,10 +144,11 @@ function updateCartUI() {
         return;
     }
 
-    cartItemsContainer.innerHTML = '';
+    cartItemsContainer.innerHTML = ''; // Очищаем текущее содержимое корзины
     cart.forEach(item => {
         const div = document.createElement('div');
         div.className = 'cart-item';
+        // Вычисляем сумму за текущий товар
         const itemTotalPrice = item.price * item.qty;
 
         div.innerHTML = `
@@ -177,10 +185,13 @@ function loadCartFromLocalStorage() {
 }
 
 // ЕДИНЫЙ ОБРАБОТЧИК СОБЫТИЙ ДЛЯ КНОПОК +/- В КОРЗИНЕ (Делегирование событий)
+// Этот обработчик назначается ОДИН РАЗ при загрузке скрипта.
+// Он перехватывает все клики по кнопкам +/- внутри cartItemsContainer.
 cartItemsContainer.addEventListener('click', (event) => {
     const target = event.target;
 
     if (target.classList.contains('inc') || target.classList.contains('dec')) {
+        // ID является строкой (UUID), нет необходимости парсить его в число
         const id = target.dataset.id;
         const item = cart.find(c => c.id === id);
 
@@ -190,16 +201,16 @@ cartItemsContainer.addEventListener('click', (event) => {
             } else if (target.classList.contains('dec')) {
                 item.qty--;
                 if (item.qty <= 0) {
-                    cart = cart.filter(c => c.id !== id);
+                    cart = cart.filter(c => c.id !== id); // Удаляем товар, если количество <= 0
                 }
             }
-            updateCartUI();
-            saveCartToLocalStorage();
+            updateCartUI(); // Обновляем UI корзины
+            saveCartToLocalStorage(); // Сохраняем изменения в localStorage
         }
     }
 });
 
-// Функции загрузки, рендеринга и фильтрации товаров
+// --- Функции загрузки и рендеринга товаров ---
 
 // Загрузка товаров из Supabase
 async function loadProducts() {
@@ -212,37 +223,12 @@ async function loadProducts() {
         return;
     }
     allProducts = data;
-
-    // Восстанавливаем заполнение категорий и применение фильтра
-    populateCategories();
-    filterProductsByCategory();
-
-    loadCartFromLocalStorage();
-    updateCartUI();
+    renderProducts(allProducts); // <--- ДОБАВЛЕН ЭТОТ ВЫЗОВ ДЛЯ ОТОБРАЖЕНИЯ ТОВАРОВ
+    loadCartFromLocalStorage(); // Загружаем состояние корзины из localStorage
+    updateCartUI(); // Обновляем UI корзины (включая счетчик)
 }
 
-// Заполнение выпадающего списка категорий на основе загруженных товаров
-function populateCategories() {
-    const categories = new Set();
-    allProducts.forEach(product => {
-        if (product.category) {
-            categories.add(product.category);
-        }
-    });
-
-    // Очищаем и добавляем опцию "Все категории"
-    if (categorySelect) { // Проверка, что элемент categorySelect существует
-        categorySelect.innerHTML = '<option value="all">Все категории</option>';
-        categories.forEach(category => {
-            const option = document.createElement('option');
-            option.value = category;
-            option.textContent = category;
-            categorySelect.appendChild(option);
-        });
-    } else {
-        console.warn("Элемент #category-select не найден. Фильтрация по категориям недоступна.");
-    }
-}
+// Функция populateCategories() полностью удалена, так как категорий больше нет.
 
 // Рендеринг списка товаров на странице
 function renderProducts(productsToDisplay) {
@@ -264,31 +250,17 @@ function renderProducts(productsToDisplay) {
         card.querySelector('button').addEventListener('click', () => {
             addToCart(p.id);
             const img = card.querySelector('img');
-            if (img) flyToCart(img);
+            if (img) flyToCart(img); // Анимация "товар летит в корзину"
         });
         productsContainer.appendChild(card);
     });
 }
 
-// Новая функция для фильтрации по категориям
-function filterProductsByCategory() {
-    let productsToDisplay = [...allProducts]; // Начинаем со всех товаров
+// Функция applyFiltersAndSort() полностью удалена.
+// Обработчики событий для полей поиска, сортировки и категорий также удалены.
 
-    if (categorySelect && categorySelect.value !== 'all') { // Проверяем, что элемент существует и выбрана конкретная категория
-        const selectedCategory = categorySelect.value;
-        productsToDisplay = productsToDisplay.filter(product =>
-            product.category === selectedCategory
-        );
-    }
-    renderProducts(productsToDisplay); // Отображаем отфильтрованные товары
-}
 
-// Обработчик события для фильтрации по категории (если элемент существует)
-if (categorySelect) {
-    categorySelect.addEventListener('change', filterProductsByCategory);
-}
-
-// Отправка заказа
+// --- Отправка заказа ---
 
 orderForm.onsubmit = async e => {
     e.preventDefault();
@@ -307,6 +279,7 @@ orderForm.onsubmit = async e => {
     }
 
     const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    // Формируем текстовое описание товаров в заказе
     const productsText = cart.map(item => {
         const totalItemPrice = (item.price * item.qty);
         return `${item.name} ${item.price} ₸ х ${item.qty}${item.unit ? ' ' + item.unit : ''} = ${totalItemPrice} ₸`;
@@ -314,6 +287,7 @@ orderForm.onsubmit = async e => {
 
 
     messageDiv.textContent = 'Отправка заказа...';
+    // Отправляем данные заказа в таблицу 'orders' Supabase
     const { error } = await supabase.from('orders').insert([{ name, phone, address, products: productsText, total }]);
 
     if (error) {
@@ -323,10 +297,11 @@ orderForm.onsubmit = async e => {
     } else {
         messageDiv.style.color = 'green';
         messageDiv.textContent = 'Заказ успешно отправлен! Спасибо.';
-        cart = [];
-        updateCartUI();
-        saveCartToLocalStorage();
-        orderForm.reset();
+        cart = []; // Очищаем корзину после успешного заказа
+        updateCartUI(); // Обновляем UI корзины (она станет пустой)
+        saveCartToLocalStorage(); // Очищаем корзину в localStorage
+        orderForm.reset(); // Очищаем поля формы
+        // Закрываем панель корзины и убираем сообщение через 3 секунды
         setTimeout(() => {
             messageDiv.textContent = '';
             cartPanel.classList.remove('open');
@@ -334,12 +309,13 @@ orderForm.onsubmit = async e => {
     }
 };
 
-// Инициализация приложения
+// --- Инициализация приложения ---
 
+// Запускаем загрузку товаров при старте скрипта
 loadProducts();
 
-// Регистрация Service Worker
-
+// --- Регистрация Service Worker ---
+// Это важно для работы PWA (Progressive Web App) и оффлайн-функциональности
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
         .then(() => console.log('✅ Service Worker зарегистрирован'))

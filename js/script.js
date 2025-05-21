@@ -263,12 +263,12 @@ function applyFiltersAndSort() {
     let currentProducts = [...allProducts]; // Создаем копию для фильтрации/сортировки
 
     // 1. Фильтрация по поисковому запросу
-    const searchTerm = searchInput.value.toLowerCase().trim();
-    if (searchTerm) {
-        currentProducts = currentProducts.filter(product =>
-            product.name.toLowerCase().includes(searchTerm)
-        );
-    }
+    //const searchTerm = searchInput.value.toLowerCase().trim();
+   // if (searchTerm) {
+     //   currentProducts = currentProducts.filter(product =>
+      //      product.name.toLowerCase().includes(searchTerm)
+     //   );
+   // }
 
     // 2. Фильтрация по категории
     const selectedCategory = categorySelect.value;
@@ -279,24 +279,24 @@ function applyFiltersAndSort() {
     }
 
     // 3. Сортировка
-    const sortOption = sortSelect.value;
-    switch (sortOption) {
-        case 'price-asc':
-            currentProducts.sort((a, b) => a.price - b.price);
-            break;
-        case 'price-desc':
-            currentProducts.sort((a, b) => b.price - a.price);
-            break;
-        case 'name-asc':
-            currentProducts.sort((a, b) => a.name.localeCompare(b.name));
-            break;
-        case 'name-desc':
-            currentProducts.sort((a, b) => b.name.localeCompare(a.name));
-            break;
-    }
+   // const sortOption = sortSelect.value;
+    //switch (sortOption) {
+      //  case 'price-asc':
+        //    currentProducts.sort((a, b) => a.price - b.price);
+          //  break;
+        //case 'price-desc':
+          //  currentProducts.sort((a, b) => b.price - a.price);
+            //break;
+        //case 'name-asc':
+          //  currentProducts.sort((a, b) => a.name.localeCompare(b.name));
+           // break;
+        //case 'name-desc':
+          //  currentProducts.sort((a, b) => b.name.localeCompare(a.name));
+           // break;
+    //}
 
-    renderProducts(currentProducts); // Отображаем отфильтрованные и отсортированные товары
-}
+    //renderProducts(currentProducts); // Отображаем отфильтрованные и отсортированные товары
+//}
 
 // Обработчики событий для поля поиска, сортировки и категории
 //searchInput.addEventListener('input', applyFiltersAndSort);

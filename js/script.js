@@ -259,16 +259,7 @@ function renderProducts(productsToDisplay) {
 }
 
 // Применение фильтров (поиск, категория) и сортировки к списку товаров
-function applyFiltersAndSort() {
-    let currentProducts = [...allProducts]; // Создаем копию для фильтрации/сортировки
 
-    // 1. Фильтрация по поисковому запросу
-    //const searchTerm = searchInput.value.toLowerCase().trim();
-   // if (searchTerm) {
-     //   currentProducts = currentProducts.filter(product =>
-      //      product.name.toLowerCase().includes(searchTerm)
-     //   );
-   // }
 
     // 2. Фильтрация по категории
     const selectedCategory = categorySelect.value;

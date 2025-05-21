@@ -3,7 +3,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = 'https://kpefeonxvgnfpgevkcwy.supabase.co';
 // !!! ВНИМАНИЕ: ЭТОТ КЛЮЧ УСТАРЕЛ !!!
 // ОЧЕНЬ РЕКОМЕНДУЕТСЯ ЗАМЕНИТЬ ЕГО НА ВАШ АКТУАЛЬНЫЙ anon (public) KEY ИЗ ПАНЕЛИ SUPABASE
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY4MDgsImV4cCI6MjA2MjgxMjgwOH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NzIzNjgwOCwiZXhwIjoyMDYyODEyODA4fQ.vmja_c7pb1FYViIslL0CACrXpqUJ9n2kgw6_oG5ZSUA';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -17,7 +17,6 @@ const cartPanel = document.getElementById('cart');
 const toggleButton = document.getElementById('cart-toggle');
 // Получаем элемент для обновления счетчика уникальных товаров в корзине
 const cartCountElement = document.getElementById('cart-count');
-const closeCartButton = document.getElementById('close-cart'); // Кнопка закрытия корзины
 
 const searchInput = document.getElementById('search-input');
 const sortSelect = document.getElementById('sort-select');
@@ -58,12 +57,6 @@ window.addEventListener("DOMContentLoaded", function () {
 toggleButton.addEventListener('click', () => {
     cartPanel.classList.toggle('open');
 });
-
-// Закрытие панели корзины по кнопке
-closeCartButton.addEventListener('click', () => {
-    cartPanel.classList.remove('open');
-});
-
 
 // Добавление товара в корзину
 // Этот товар добавляется только один раз, если его нет в корзине.
@@ -106,10 +99,10 @@ function flyToCart(imgElement) {
     imgClone.style.left = imgRect.left + 'px';
     imgClone.style.top = imgRect.top + 'px';
     imgClone.style.width = imgRect.width + 'px';
-    imgClone.style.height = imgRect.height + 'px';
+    imgClone.style.height = imgRect.height + 'px'; // Добавим высоту
     imgClone.style.transition = 'all 0.8s ease-in-out';
-    imgClone.style.borderRadius = '50%';
-    imgClone.style.objectFit = 'cover';
+    imgClone.style.borderRadius = '50%'; // Сделаем круглым
+    imgClone.style.objectFit = 'cover'; // Обрезка изображения, чтобы заполнить круг
 
     document.body.appendChild(imgClone);
 
@@ -117,12 +110,12 @@ function flyToCart(imgElement) {
         imgClone.style.left = cartRect.left + 'px';
         imgClone.style.top = cartRect.top + 'px';
         imgClone.style.width = '20px';
-        imgClone.style.height = '20px';
+        imgClone.style.height = '20px'; // И высоту
         imgClone.style.opacity = '0.5';
     });
 
     setTimeout(() => {
-        imgClone.remove();
+        imgClone.remove(); // Удаляем клон после завершения анимации
     }, 800);
 }
 
@@ -148,18 +141,9 @@ function updateCartUI() {
     cart.forEach(item => {
         const div = document.createElement('div');
         div.className = 'cart-item';
-
-        // Вычисляем сумму за текущий товар
-        const itemTotalPrice = item.price * item.qty;
-
         div.innerHTML = `
-            <div class="cart-item-info">
-                <span class="cart-item-name">${item.name}</span>
-                <span class="cart-item-details">
-                    (${item.price} ₸ x ${item.qty}${item.unit ? ' ' + item.unit : ''}) = ${itemTotalPrice} ₸
-                </span>
-            </div>
-            <div class="cart-item-qty-controls">
+            <div class="cart-item-name">${item.name} (${item.price} ₸)</div>
+            <div class="cart-item-qty">
                 <button class="dec" data-id="${item.id}">-</button>
                 <div>${item.qty}</div>
                 <button class="inc" data-id="${item.id}">+</button>
@@ -186,10 +170,13 @@ function loadCartFromLocalStorage() {
 }
 
 // ЕДИНЫЙ ОБРАБОТЧИК СОБЫТИЙ ДЛЯ КНОПОК +/- В КОРЗИНЕ (Делегирование событий)
+// Этот обработчик назначается ОДИН РАЗ при загрузке скрипта.
+// Он перехватывает все клики по кнопкам +/- внутри cartItemsContainer.
 cartItemsContainer.addEventListener('click', (event) => {
     const target = event.target;
 
     if (target.classList.contains('inc') || target.classList.contains('dec')) {
+        // ID является строкой (UUID), нет необходимости парсить его в число
         const id = target.dataset.id;
         const item = cart.find(c => c.id === id);
 
@@ -199,11 +186,11 @@ cartItemsContainer.addEventListener('click', (event) => {
             } else if (target.classList.contains('dec')) {
                 item.qty--;
                 if (item.qty <= 0) {
-                    cart = cart.filter(c => c.id !== id);
+                    cart = cart.filter(c => c.id !== id); // Удаляем товар, если количество <= 0
                 }
             }
-            updateCartUI();
-            saveCartToLocalStorage();
+            updateCartUI(); // Обновляем UI корзины
+            saveCartToLocalStorage(); // Сохраняем изменения в localStorage
         }
     }
 });
@@ -221,10 +208,10 @@ async function loadProducts() {
         return;
     }
     allProducts = data;
-    populateCategories();
-    applyFiltersAndSort();
-    loadCartFromLocalStorage();
-    updateCartUI();
+    populateCategories(); // Заполняем выпадающий список категорий
+    applyFiltersAndSort(); // Применяем фильтры и сортировку по умолчанию
+    loadCartFromLocalStorage(); // Загружаем состояние корзины из localStorage
+    updateCartUI(); // Обновляем UI корзины (включая счетчик)
 }
 
 // Заполнение выпадающего списка категорий на основе загруженных товаров
@@ -265,7 +252,7 @@ function renderProducts(productsToDisplay) {
         card.querySelector('button').addEventListener('click', () => {
             addToCart(p.id);
             const img = card.querySelector('img');
-            if (img) flyToCart(img);
+            if (img) flyToCart(img); // Анимация "товар летит в корзину"
         });
         productsContainer.appendChild(card);
     });
@@ -273,7 +260,7 @@ function renderProducts(productsToDisplay) {
 
 // Применение фильтров (поиск, категория) и сортировки к списку товаров
 function applyFiltersAndSort() {
-    let currentProducts = [...allProducts];
+    let currentProducts = [...allProducts]; // Создаем копию для фильтрации/сортировки
 
     // 1. Фильтрация по поисковому запросу
     const searchTerm = searchInput.value.toLowerCase().trim();
@@ -308,7 +295,7 @@ function applyFiltersAndSort() {
             break;
     }
 
-    renderProducts(currentProducts);
+    renderProducts(currentProducts); // Отображаем отфильтрованные и отсортированные товары
 }
 
 // Обработчики событий для поля поиска, сортировки и категории
@@ -335,13 +322,15 @@ orderForm.onsubmit = async e => {
     }
 
     const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    // Формируем текстовое описание товаров в заказе
     const productsText = cart.map(item => {
         const totalItemPrice = (item.price * item.qty);
-        return `${item.name} ${item.price} ₸ х ${item.qty}${item.unit ? ' ' + item.unit : ''} = ${totalItemPrice} ₸`;
+        return `${item.name} ${item.price} ₸ х ${item.qty} ${item.unit || ''} = ${totalItemPrice} ₸`;
     }).join('\n');
 
 
     messageDiv.textContent = 'Отправка заказа...';
+    // Отправляем данные заказа в таблицу 'orders' Supabase
     const { error } = await supabase.from('orders').insert([{ name, phone, address, products: productsText, total }]);
 
     if (error) {
@@ -351,10 +340,11 @@ orderForm.onsubmit = async e => {
     } else {
         messageDiv.style.color = 'green';
         messageDiv.textContent = 'Заказ успешно отправлен! Спасибо.';
-        cart = [];
-        updateCartUI();
-        saveCartToLocalStorage();
-        orderForm.reset();
+        cart = []; // Очищаем корзину после успешного заказа
+        updateCartUI(); // Обновляем UI корзины (она станет пустой)
+        saveCartToLocalStorage(); // Очищаем корзину в localStorage
+        orderForm.reset(); // Очищаем поля формы
+        // Закрываем панель корзины и убираем сообщение через 3 секунды
         setTimeout(() => {
             messageDiv.textContent = '';
             cartPanel.classList.remove('open');
@@ -364,9 +354,11 @@ orderForm.onsubmit = async e => {
 
 // --- Инициализация приложения ---
 
+// Запускаем загрузку товаров при старте скрипта
 loadProducts();
 
 // --- Регистрация Service Worker ---
+// Это важно для работы PWA (Progressive Web App) и оффлайн-функциональности
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
         .then(() => console.log('✅ Service Worker зарегистрирован'))

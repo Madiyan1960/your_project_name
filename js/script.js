@@ -86,40 +86,58 @@ function addToCart(productId) {
 
 // Анимация "товар летит в корзину"
 function flyToCart(imgElement) {
-    const cartIcon = document.querySelector('#cart-icon');
+    const cartIcon = document.querySelector('#cart-icon'); // Это правильно, берем саму иконку
     if (!cartIcon) {
         console.warn("Элемент #cart-icon не найден для анимации.");
         return;
     }
-    const imgClone = imgElement.cloneNode(true);
-    const imgRect = imgElement.getBoundingClientRect();
-    const cartRect = cartIcon.getBoundingClientRect();
 
+    const imgClone = imgElement.cloneNode(true);
+    const imgRect = imgElement.getBoundingClientRect(); // Позиция исходного изображения
+    const cartRect = cartIcon.getBoundingClientRect();   // Позиция иконки корзины
+
+    // Устанавливаем начальные стили для клона
     imgClone.style.position = 'fixed';
-    imgClone.style.zIndex = '9999';
-    imgClone.style.left = imgRect.left + 'px';
-    imgClone.style.top = imgRect.top + 'px';
-    imgClone.style.width = imgRect.width + 'px';
-    imgClone.style.height = imgRect.height + 'px'; // Добавим высоту
-    imgClone.style.transition = 'all 0.8s ease-in-out';
-    imgClone.style.borderRadius = '50%'; // Сделаем круглым
+    imgClone.style.zIndex = '99999'; // Увеличиваем z-index, чтобы быть уверенным, что он всегда сверху
+    imgClone.style.left = `${imgRect.left}px`;
+    imgClone.style.top = `${imgRect.top}px`;
+    imgClone.style.width = `${imgRect.width}px`;
+    imgClone.style.height = `${imgRect.height}px`;
+    imgClone.style.transition = 'all 0.8s ease-in-out'; // Длительность анимации
+    imgClone.style.borderRadius = '50%'; // Делаем круглым
     imgClone.style.objectFit = 'cover'; // Обрезка изображения, чтобы заполнить круг
 
     document.body.appendChild(imgClone);
 
+    // Запускаем анимацию в следующем кадре отрисовки
     requestAnimationFrame(() => {
-        imgClone.style.left = cartRect.left + 'px';
-        imgClone.style.top = cartRect.top + 'px';
+        // Вычисляем центральную точку иконки корзины и уменьшаем размер клона до 20px
+        const targetLeft = cartRect.left + (cartRect.width / 2) - 10; // 10 = половина желаемого размера 20px
+        const targetTop = cartRect.top + (cartRect.height / 2) - 10; // 10 = половина желаемого размера 20px
+
+        imgClone.style.left = `${targetLeft}px`;
+        imgClone.style.top = `${targetTop}px`;
         imgClone.style.width = '20px';
-        imgClone.style.height = '20px'; // И высоту
-        imgClone.style.opacity = '0.5';
+        imgClone.style.height = '20px';
+        imgClone.style.opacity = '0.5'; // Немного прозрачности для эффекта
     });
 
-    setTimeout(() => {
-        imgClone.remove(); // Удаляем клон после завершения анимации
-    }, 800);
-}
+    // Удаляем клон после завершения анимации (время должно совпадать с transition)
+    // Добавим слушатель 'transitionend' для более надежного удаления
+    imgClone.addEventListener('transitionend', () => {
+        if (imgClone.parentNode) { // Проверяем, что элемент еще в DOM
+            imgClone.remove();
+        }
+    }, { once: true }); // Удаляем слушатель после первого срабатывания
 
+    // Если transitionend не сработает по каким-то причинам (например, пользователь быстро скроллит)
+    // добавим запасной setTimeout
+    setTimeout(() => {
+        if (imgClone.parentNode) {
+            imgClone.remove();
+        }
+    }, 850); // Чуть больше, чем 0.8s, чтобы быть уверенным
+}
 // Обновление пользовательского интерфейса корзины (отображение товаров, общей суммы и счетчика)
 function updateCartUI() {
     // Рассчитываем количество УНИКАЛЬНЫХ товаров в корзине (просто длина массива cart)

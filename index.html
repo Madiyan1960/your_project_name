@@ -14,17 +14,20 @@
 <body>
 
     <div class="header-fixed-container">
-        <h3 class="shop-title">«Меруерт»</h3>
+        <div class="header-top-row">
+            <h3 class="shop-title">«Меруерт»</h3>
+            <button id="cart-toggle" title="Открыть/закрыть корзину">
+                <h3>
+                    <span id="cart-icon">🛒</span> (<span id="cart-count">0</span>)
+                </h3>
+            </button>
+        </div>
+
         <div class="search-sort-filter">
             <select id="category-select">
                 <option value="all">Все категории</option>
             </select>
         </div>
-        <button id="cart-toggle" title="Открыть/закрыть корзину">
-            <h3>
-                <span id="cart-icon">🛒</span> (<span id="cart-count">0</span>)
-            </h3>
-        </button>
     </div>
     <div id="products">Загрузка товаров...</div>
 

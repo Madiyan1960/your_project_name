@@ -58,30 +58,31 @@ toggleButton.addEventListener('click', () => {
     cartPanel.classList.toggle('open');
 });
 
+/// >>>>> ИЗМЕНЕННАЯ ФУНКЦИЯ addToCart НАЧАЛО <<<<<
 // Добавление товара в корзину
-// Этот товар добавляется только один раз, если его нет в корзине.
-// Если он уже есть, его количество не изменяется этой функцией.
+// Возвращает true, если товар был добавлен как новый, false, если уже был.
 function addToCart(productId) {
     const product = allProducts.find(p => p.id === productId);
     if (!product) {
         console.error("Попытка добавить несуществующий продукт:", productId);
-        return;
+        return false; // Товар не найден, не добавили
     }
 
     const item = cart.find(c => c.id === productId);
 
-    if (!item) { // Если товара НЕТ в корзине
+    if (!item) { // Если товара НЕТ в корзине (первое добавление)
         cart.push({ ...product, qty: 1 }); // Добавляем его с начальным количеством 1
-        console.log(`Товар "${product.name}" добавлен в корзину.`);
+        console.log(`[DEV LOG] Товар "${product.name}" добавлен в корзину.`); // Лог для разработчика
+        updateCartUI();       // Обновляем пользовательский интерфейс корзины
+        saveCartToLocalStorage(); // Сохраняем текущее состояние корзины в localStorage
+        return true; // Товар был добавлен как новый
     } else {
         // Если товар УЖЕ есть в корзине, ничего не делаем с его количеством.
-        // Количество можно будет изменить только из самой корзины (+/- кнопки).
-        console.log(`Товар "${product.name}" уже в корзине. Количество не изменено.`);
+        console.log(`[DEV LOG] Товар "${product.name}" уже в корзине. Количество не изменено.`); // Лог для разработчика
+        return false; // Товар уже был в корзине
     }
-
-    updateCartUI();      // Обновляем пользовательский интерфейс корзины
-    saveCartToLocalStorage(); // Сохраняем текущее состояние корзины в localStorage
 }
+/// <<<<< ИЗМЕНЕННАЯ ФУНКЦИЯ addToCart КОНЕЦ <<<<<
 
 // Анимация "товар летит в корзину"
 function flyToCart(imgElement) {
@@ -93,7 +94,7 @@ function flyToCart(imgElement) {
 
     const imgClone = imgElement.cloneNode(true);
     const imgRect = imgElement.getBoundingClientRect(); // Позиция исходного изображения
-    const cartRect = cartIcon.getBoundingClientRect();   // Позиция иконки корзины
+    const cartRect = cartIcon.getBoundingClientRect();    // Позиция иконки корзины
 
     // Устанавливаем начальные стили для клона
     imgClone.style.position = 'fixed';
@@ -137,6 +138,7 @@ function flyToCart(imgElement) {
         }
     }, 850); // Чуть больше, чем 0.8s, чтобы быть уверенным
 }
+
 // Обновление пользовательского интерфейса корзины (отображение товаров, общей суммы и счетчика)
 function updateCartUI() {
     // Рассчитываем количество УНИКАЛЬНЫХ товаров в корзине (просто длина массива cart)
@@ -267,11 +269,31 @@ function renderProducts(productsToDisplay) {
             <button class="add-to-cart" data-id="${p.id}">+</button>
         `;
 
+        /// >>>>> ИЗМЕНЕННЫЙ БЛОК renderProducts.addEventListener НАЧАЛО <<<<<
         card.querySelector('button').addEventListener('click', () => {
-            addToCart(p.id);
-            const img = card.querySelector('img');
-            if (img) flyToCart(img); // Анимация "товар летит в корзину"
+            const productId = p.id;
+            const productImg = card.querySelector('img'); // Получаем изображение товара
+
+            // Вызываем addToCart и ЗАПОМИНАЕМ, что она вернула.
+            // wasAddedAsNew будет true, если товар добавлен впервые, false если уже был.
+            const wasAddedAsNew = addToCart(productId); 
+
+            if (wasAddedAsNew) {
+                // Если товар был добавлен как новый (wasAddedAsNew === true):
+                if (productImg) {
+                    flyToCart(productImg); // Запускаем анимацию "полета"
+                }
+                // Показываем зеленое сообщение пользователю
+                showTemporaryMessage('Товар добавлен в корзину!', 'green'); 
+            } else {
+                // Если товар УЖЕ БЫЛ в корзине (wasAddedAsNew === false):
+                // Анимация "полета" НЕ запускается.
+                // Показываем оранжевое сообщение пользователю
+                showTemporaryMessage('Этот товар уже есть в корзине.', 'orange'); 
+            }
         });
+        /// <<<<< ИЗМЕНЕННЫЙ БЛОК renderProducts.addEventListener КОНЕЦ <<<<<
+
         productsContainer.appendChild(card);
     });
 }
@@ -326,7 +348,7 @@ categorySelect.addEventListener('change', applyFiltersAndSort);
 orderForm.onsubmit = async e => {
     e.preventDefault();
     if (cart.length === 0) {
-        alert('Корзина пуста!');
+        alert('Корзина пуста!'); // Используем alert для критического сообщения
         return;
     }
 
@@ -335,7 +357,7 @@ orderForm.onsubmit = async e => {
     const address = document.getElementById('address').value.trim();
 
     if (!name || !phone || !address) {
-        alert('Пожалуйста, заполните все поля.');
+        alert('Пожалуйста, заполните все поля.'); // Используем alert для критического сообщения
         return;
     }
 
@@ -374,6 +396,48 @@ orderForm.onsubmit = async e => {
 
 // Запускаем загрузку товаров при старте скрипта
 loadProducts();
+
+/// >>>>> ДОБАВЛЕННАЯ ФУНКЦИЯ showTemporaryMessage НАЧАЛО <<<<<
+// Функция для отображения временных сообщений в нижней части экрана
+function showTemporaryMessage(text, color = 'green', duration = 2000) {
+    let tempMessageDiv = document.getElementById('temp-notification');
+    if (!tempMessageDiv) {
+        // Если элемента еще нет, создаем его один раз
+        tempMessageDiv = document.createElement('div');
+        tempMessageDiv.id = 'temp-notification';
+        // Базовые стили для позиционирования и внешнего вида
+        tempMessageDiv.style.position = 'fixed'; // Фиксируем на экране
+        tempMessageDiv.style.bottom = '20px';    // Отступ от низа
+        tempMessageDiv.style.left = '50%';       // Позиция по центру
+        tempMessageDiv.style.transform = 'translateX(-50%)'; // Точное центрирование
+        tempMessageDiv.style.background = '#333'; // Темный фон
+        tempMessageDiv.style.color = 'white';     // Белый текст
+        tempMessageDiv.style.padding = '10px 20px'; // Отступы текста
+        tempMessageDiv.style.borderRadius = '5px'; // Скругленные углы
+        tempMessageDiv.style.zIndex = '10000';    // Поверх всех других элементов
+        tempMessageDiv.style.opacity = '0';       // Изначально невидимый
+        tempMessageDiv.style.transition = 'opacity 0.3s ease-in-out'; // Плавное появление/исчезновение
+        document.body.appendChild(tempMessageDiv); // Добавляем в HTML
+    }
+
+    tempMessageDiv.textContent = text; // Устанавливаем текст сообщения
+    // Выбираем цвет фона в зависимости от типа сообщения
+    tempMessageDiv.style.background = color === 'green' ? '#28a745' : '#ffc107'; // Зеленый для успеха, оранжевый для предупреждения
+    tempMessageDiv.style.color = color === 'green' ? 'white' : '#333'; // Цвет текста
+
+    // Показываем сообщение (делаем видимым)
+    tempMessageDiv.style.opacity = '1';
+
+    // Скрываем сообщение через заданное время (duration)
+    setTimeout(() => {
+        tempMessageDiv.style.opacity = '0'; // Плавно скрываем
+        // Очищаем текст после полного скрытия, чтобы не занимать место в DOM
+        setTimeout(() => {
+            tempMessageDiv.textContent = '';
+        }, 300); // Подождать, пока закончится анимация исчезновения (0.3s)
+    }, duration); // Время, через которое сообщение начнет исчезать
+}
+/// <<<<< ДОБАВЛЕННАЯ ФУНКЦИЯ showTemporaryMessage КОНЕЦ <<<<<
 
 // --- Регистрация Service Worker ---
 // Это важно для работы PWA (Progressive Web App) и оффлайн-функциональности

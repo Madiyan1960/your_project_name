@@ -161,12 +161,19 @@ function updateCartUI() {
     cart.forEach(item => {
         const div = document.createElement('div');
         div.className = 'cart-item';
+
+        // Рассчитываем общую сумму для ТЕКУЩЕГО товара
+        const totalItemPrice = item.price * item.qty;
+
         div.innerHTML = `
-          <div class="cart-item-name">${item.name} ${item.price} ₸ х ${item.qty} ${total} </div>
-            <div class="cart-item-qty">
+            <span class="cart-item-summary">
+                ${item.name} ${item.price} ₸ х ${item.qty} ${item.unit ? `(${item.unit})` : ''} = ${totalItemPrice} ₸
+            </span>
+            <div class="cart-item-actions">
                 <button class="dec" data-id="${item.id}">-</button>
-                <div>${item.qty}</div>
+                <span class="qty">${item.qty}</span>
                 <button class="inc" data-id="${item.id}">+</button>
+                <button class="remove-item" data-id="${item.id}">X</button>
             </div>
         `;
         cartItemsContainer.appendChild(div);

@@ -1,8 +1,8 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://kpefeonxvgnfpgevkcwy.supabase.co';
-// !!! ЗАМЕНИТЕ ЭТОТ КЛЮЧ !!!
-// Скопируйте ваш актуальный anon (public) KEY из панели Supabase -> Project Settings -> API
+// !!! ВНИМАНИЕ: ЭТОТ КЛЮЧ УСТАРЕЛ !!!
+// ОЧЕНЬ РЕКОМЕНДУЕТСЯ ЗАМЕНИТЬ ЕГО НА ВАШ АКТУАЛЬНЫЙ anon (public) KEY ИЗ ПАНЕЛИ SUPABASE
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwZWZlb254dmduZnBnZXZrY3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMzY4MDgsImV4cCI6MjA2MjgxMjgwOH0.aZJhwODNOS3FhyT8k-qAAfvo0NaYbv4QSm6SwuNaeys';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -15,41 +15,29 @@ const orderForm = document.getElementById('orderForm');
 const messageDiv = document.getElementById('message');
 const cartPanel = document.getElementById('cart');
 const toggleButton = document.getElementById('cart-toggle');
+// Получаем элемент для обновления счетчика уникальных товаров в корзине
 const cartCountElement = document.getElementById('cart-count');
 
 const searchInput = document.getElementById('search-input');
 const sortSelect = document.getElementById('sort-select');
 const categorySelect = document.getElementById('category-select');
 
-// >>>>> НОВЫЕ ЭЛЕМЕНТЫ DOM для АУТЕНТИФИКАЦИИ <<<<<
-const registerForm = document.getElementById('register-form');
-const loginForm = document.getElementById('login-form');
-const registerEmailInput = document.getElementById('register-email');
-const registerPasswordInput = document.getElementById('register-password');
-const registerButton = document.getElementById('register-button');
-const loginEmailInput = document.getElementById('login-email');
-const loginPasswordInput = document.getElementById('login-password');
-const loginButton = document.getElementById('login-button');
-const logoutButton = document.getElementById('logout-button');
-const userStatusSpan = document.getElementById('user-status');
-const showLoginLink = document.getElementById('show-login');
-const showRegisterLink = document.getElementById('show-register');
-const myOrdersLink = document.getElementById('my-orders-link');
-// >>>>> КОНЕЦ НОВЫХ ЭЛЕМЕНТОВ DOM <<<<<
+let allProducts = []; // Все загруженные товары из Supabase
+let cart = []; // Текущее состояние корзины, массив объектов { product_data, qty }
 
-let allProducts = [];
-let cart = [];
-
-// --- Инициализация и сохранение данных формы заказа ---
+// --- Инициализация и сохранение данных формы ---
+// Сохраняем введенные данные в localStorage для удобства пользователя
 window.addEventListener("DOMContentLoaded", function () {
     const nameInput = document.getElementById("name");
     const phoneInput = document.getElementById("phone");
     const addressInput = document.getElementById("address");
 
+    // Загружаем данные из localStorage при загрузке страницы
     nameInput.value = localStorage.getItem("name") || "";
     phoneInput.value = localStorage.getItem("phone") || "";
     addressInput.value = localStorage.getItem("address") || "";
 
+    // Сохраняем данные в localStorage при изменении полей
     nameInput.addEventListener("input", () => {
         localStorage.setItem("name", nameInput.value);
     });
@@ -63,101 +51,6 @@ window.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// >>>>> НОВЫЕ ФУНКЦИИ и ОБРАБОТЧИКИ АУТЕНТИФИКАЦИИ <<<<<
-
-// Функция для обновления интерфейса в зависимости от статуса аутентификации
-async function updateAuthUI() {
-    const { data: { user } } = await supabase.auth.getUser(); // Получаем текущего пользователя
-    if (user) {
-        // Пользователь авторизован
-        userStatusSpan.textContent = `Привет, ${user.email}!`;
-        logoutButton.style.display = 'block';
-        myOrdersLink.style.display = 'block';
-        if (registerForm) registerForm.style.display = 'none';
-        if (loginForm) loginForm.style.display = 'none';
-    } else {
-        // Пользователь не авторизован
-        userStatusSpan.textContent = 'Вы не авторизованы';
-        logoutButton.style.display = 'none';
-        myOrdersLink.style.display = 'none';
-        if (loginForm) loginForm.style.display = 'block'; // Показываем форму входа по умолчанию
-        if (registerForm) registerForm.style.display = 'none';
-    }
-}
-
-// Переключение между формами регистрации и входа
-if (showLoginLink) {
-    showLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (registerForm) registerForm.style.display = 'none';
-        if (loginForm) loginForm.style.display = 'block';
-    });
-}
-if (showRegisterLink) {
-    showRegisterLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (loginForm) loginForm.style.display = 'none';
-        if (registerForm) registerForm.style.display = 'block';
-    });
-}
-
-// Обработчик для кнопки регистрации
-if (registerButton) {
-    registerButton.addEventListener('click', async () => {
-        const email = registerEmailInput.value;
-        const password = registerPasswordInput.value;
-        const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-        });
-        if (error) {
-            alert('Ошибка регистрации: ' + error.message);
-            console.error("Ошибка регистрации:", error);
-        } else {
-            alert('Регистрация успешна! Проверьте вашу почту для подтверждения (если включено в настройках Supabase).');
-            updateAuthUI();
-        }
-    });
-}
-
-// Обработчик для кнопки входа
-if (loginButton) {
-    loginButton.addEventListener('click', async () => {
-        const email = loginEmailInput.value;
-        const password = loginPasswordInput.value;
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-        });
-        if (error) {
-            alert('Ошибка входа: ' + error.message);
-            console.error("Ошибка входа:", error);
-        } else {
-            alert('Вход успешен!');
-            updateAuthUI();
-            // Опционально: можно перенаправить пользователя на страницу "Мои заказы"
-            // window.location.href = 'my-orders.html';
-        }
-    });
-}
-
-// Обработчик для кнопки выхода
-if (logoutButton) {
-    logoutButton.addEventListener('click', async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-            alert('Ошибка выхода: ' + error.message);
-            console.error("Ошибка выхода:", error);
-        } else {
-            alert('Вы успешно вышли.');
-            updateAuthUI();
-        }
-    });
-}
-
-// >>>>> КОНЕЦ НОВЫХ ФУНКЦИЙ и ОБРАБОТЧИКОВ АУТЕНТИФИКАЦИИ <<<<<
-
-
 // --- Функции управления корзиной и UI ---
 
 // Переключение видимости панели корзины
@@ -165,80 +58,93 @@ toggleButton.addEventListener('click', () => {
     cartPanel.classList.toggle('open');
 });
 
+/// >>>>> ИЗМЕНЕННАЯ ФУНКЦИЯ addToCart НАЧАЛО <<<<<
 // Добавление товара в корзину
+// Возвращает true, если товар был добавлен как новый, false, если уже был.
 function addToCart(productId) {
     const product = allProducts.find(p => p.id === productId);
     if (!product) {
         console.error("Попытка добавить несуществующий продукт:", productId);
-        return false;
+        return false; // Товар не найден, не добавили
     }
 
     const item = cart.find(c => c.id === productId);
 
-    if (!item) {
-        cart.push({ ...product, qty: 1 });
-        console.log(`[DEV LOG] Товар "${product.name}" добавлен в корзину.`);
-        updateCartUI();
-        saveCartToLocalStorage();
-        return true;
+    if (!item) { // Если товара НЕТ в корзине (первое добавление)
+        cart.push({ ...product, qty: 1 }); // Добавляем его с начальным количеством 1
+        console.log(`[DEV LOG] Товар "${product.name}" добавлен в корзину.`); // Лог для разработчика
+        updateCartUI();       // Обновляем пользовательский интерфейс корзины
+        saveCartToLocalStorage(); // Сохраняем текущее состояние корзины в localStorage
+        return true; // Товар был добавлен как новый
     } else {
-        console.log(`[DEV LOG] Товар "${product.name}" уже в корзине. Количество не изменено.`);
-        return false;
+        // Если товар УЖЕ есть в корзине, ничего не делаем с его количеством.
+        console.log(`[DEV LOG] Товар "${product.name}" уже в корзине. Количество не изменено.`); // Лог для разработчика
+        return false; // Товар уже был в корзине
     }
 }
+/// <<<<< ИЗМЕНЕННАЯ ФУНКЦИЯ addToCart КОНЕЦ <<<<<
 
 // Анимация "товар летит в корзину"
 function flyToCart(imgElement) {
-    const cartIcon = document.querySelector('#cart-icon');
+    const cartIcon = document.querySelector('#cart-icon'); // Это правильно, берем саму иконку
     if (!cartIcon) {
         console.warn("Элемент #cart-icon не найден для анимации.");
         return;
     }
 
     const imgClone = imgElement.cloneNode(true);
-    const imgRect = imgElement.getBoundingClientRect();
-    const cartRect = cartIcon.getBoundingClientRect();
+    const imgRect = imgElement.getBoundingClientRect(); // Позиция исходного изображения
+    const cartRect = cartIcon.getBoundingClientRect();    // Позиция иконки корзины
 
+    // Устанавливаем начальные стили для клона
     imgClone.style.position = 'fixed';
-    imgClone.style.zIndex = '99999';
+    imgClone.style.zIndex = '99999'; // Увеличиваем z-index, чтобы быть уверенным, что он всегда сверху
     imgClone.style.left = `${imgRect.left}px`;
     imgClone.style.top = `${imgRect.top}px`;
     imgClone.style.width = `${imgRect.width}px`;
     imgClone.style.height = `${imgRect.height}px`;
-    imgClone.style.transition = 'all 0.8s ease-in-out';
-    imgClone.style.borderRadius = '50%';
-    imgClone.style.objectFit = 'cover';
+    imgClone.style.transition = 'all 0.8s ease-in-out'; // Длительность анимации
+    imgClone.style.borderRadius = '50%'; // Делаем круглым
+    imgClone.style.objectFit = 'cover'; // Обрезка изображения, чтобы заполнить круг
 
     document.body.appendChild(imgClone);
 
+    // Запускаем анимацию в следующем кадре отрисовки
     requestAnimationFrame(() => {
-        const targetLeft = cartRect.left + (cartRect.width / 2) - 10;
-        const targetTop = cartRect.top + (cartRect.height / 2) - 10;
+        // Вычисляем центральную точку иконки корзины и уменьшаем размер клона до 20px
+        const targetLeft = cartRect.left + (cartRect.width / 2) - 10; // 10 = половина желаемого размера 20px
+        const targetTop = cartRect.top + (cartRect.height / 2) - 10; // 10 = половина желаемого размера 20px
 
         imgClone.style.left = `${targetLeft}px`;
         imgClone.style.top = `${targetTop}px`;
         imgClone.style.width = '20px';
         imgClone.style.height = '20px';
-        imgClone.style.opacity = '0.5';
+        imgClone.style.opacity = '0.5'; // Немного прозрачности для эффекта
     });
 
+    // Удаляем клон после завершения анимации (время должно совпадать с transition)
+    // Добавим слушатель 'transitionend' для более надежного удаления
     imgClone.addEventListener('transitionend', () => {
-        if (imgClone.parentNode) {
+        if (imgClone.parentNode) { // Проверяем, что элемент еще в DOM
             imgClone.remove();
         }
-    }, { once: true });
+    }, { once: true }); // Удаляем слушатель после первого срабатывания
 
+    // Если transitionend не сработает по каким-то причинам (например, пользователь быстро скроллит)
+    // добавим запасной setTimeout
     setTimeout(() => {
         if (imgClone.parentNode) {
             imgClone.remove();
         }
-    }, 850);
+    }, 850); // Чуть больше, чем 0.8s, чтобы быть уверенным
 }
 
 // Обновление пользовательского интерфейса корзины (отображение товаров, общей суммы и счетчика)
 function updateCartUI() {
+    // Рассчитываем количество УНИКАЛЬНЫХ товаров в корзине (просто длина массива cart)
     const totalUniqueItemsInCart = cart.length;
 
+    // Обновляем счетчик на кнопке корзины
     if (cartCountElement) {
         cartCountElement.textContent = totalUniqueItemsInCart;
     } else {
@@ -251,11 +157,12 @@ function updateCartUI() {
         return;
     }
 
-    cartItemsContainer.innerHTML = '';
+    cartItemsContainer.innerHTML = ''; // Очищаем текущее содержимое корзины
     cart.forEach(item => {
         const div = document.createElement('div');
         div.className = 'cart-item';
 
+        // Рассчитываем общую сумму для ТЕКУЩЕГО товара
         const totalItemPrice = item.price * item.qty;
 
         div.innerHTML = `
@@ -266,7 +173,7 @@ function updateCartUI() {
                 <button class="dec" data-id="${item.id}">-</button>
                 <span class="qty">${item.qty}</span>
                 <button class="inc" data-id="${item.id}">+</button>
-
+               
             </div>
         `;
         cartItemsContainer.appendChild(div);
@@ -290,10 +197,13 @@ function loadCartFromLocalStorage() {
 }
 
 // ЕДИНЫЙ ОБРАБОТЧИК СОБЫТИЙ ДЛЯ КНОПОК +/- В КОРЗИНЕ (Делегирование событий)
+// Этот обработчик назначается ОДИН РАЗ при загрузке скрипта.
+// Он перехватывает все клики по кнопкам +/- внутри cartItemsContainer.
 cartItemsContainer.addEventListener('click', (event) => {
     const target = event.target;
 
     if (target.classList.contains('inc') || target.classList.contains('dec')) {
+        // ID является строкой (UUID), нет необходимости парсить его в число
         const id = target.dataset.id;
         const item = cart.find(c => c.id === id);
 
@@ -303,11 +213,11 @@ cartItemsContainer.addEventListener('click', (event) => {
             } else if (target.classList.contains('dec')) {
                 item.qty--;
                 if (item.qty <= 0) {
-                    cart = cart.filter(c => c.id !== id);
+                    cart = cart.filter(c => c.id !== id); // Удаляем товар, если количество <= 0
                 }
             }
-            updateCartUI();
-            saveCartToLocalStorage();
+            updateCartUI(); // Обновляем UI корзины
+            saveCartToLocalStorage(); // Сохраняем изменения в localStorage
         }
     }
 });
@@ -325,10 +235,10 @@ async function loadProducts() {
         return;
     }
     allProducts = data;
-    populateCategories();
-    applyFiltersAndSort();
-    loadCartFromLocalStorage();
-    updateCartUI();
+    populateCategories(); // Заполняем выпадающий список категорий
+    applyFiltersAndSort(); // Применяем фильтры и сортировку по умолчанию
+    loadCartFromLocalStorage(); // Загружаем состояние корзины из localStorage
+    updateCartUI(); // Обновляем UI корзины (включая счетчик)
 }
 
 // Заполнение выпадающего списка категорий на основе загруженных товаров
@@ -366,21 +276,30 @@ function renderProducts(productsToDisplay) {
             <button class="add-to-cart" data-id="${p.id}">+</button>
         `;
 
+        /// >>>>> ИЗМЕНЕННЫЙ БЛОК renderProducts.addEventListener НАЧАЛО <<<<<
         card.querySelector('button').addEventListener('click', () => {
             const productId = p.id;
-            const productImg = card.querySelector('img');
+            const productImg = card.querySelector('img'); // Получаем изображение товара
 
-            const wasAddedAsNew = addToCart(productId);
+            // Вызываем addToCart и ЗАПОМИНАЕМ, что она вернула.
+            // wasAddedAsNew будет true, если товар добавлен впервые, false если уже был.
+            const wasAddedAsNew = addToCart(productId); 
 
             if (wasAddedAsNew) {
+                // Если товар был добавлен как новый (wasAddedAsNew === true):
                 if (productImg) {
-                    flyToCart(productImg);
+                    flyToCart(productImg); // Запускаем анимацию "полета"
                 }
-                showTemporaryMessage('Товар добавлен в корзину!', 'green');
+                // Показываем зеленое сообщение пользователю
+                showTemporaryMessage('Товар добавлен в корзину!', 'green'); 
             } else {
-                showTemporaryMessage('Этот товар уже есть в корзине.', 'orange');
+                // Если товар УЖЕ БЫЛ в корзине (wasAddedAsNew === false):
+                // Анимация "полета" НЕ запускается.
+                // Показываем оранжевое сообщение пользователю
+                showTemporaryMessage('Этот товар уже есть в корзине.', 'orange'); 
             }
         });
+        /// <<<<< ИЗМЕНЕННЫЙ БЛОК renderProducts.addEventListener КОНЕЦ <<<<<
 
         productsContainer.appendChild(card);
     });
@@ -388,8 +307,9 @@ function renderProducts(productsToDisplay) {
 
 // Применение фильтров (поиск, категория) и сортировки к списку товаров
 function applyFiltersAndSort() {
-    let currentProducts = [...allProducts];
+    let currentProducts = [...allProducts]; // Создаем копию для фильтрации/сортировки
 
+    // 1. Фильтрация по поисковому запросу
     const searchTerm = searchInput.value.toLowerCase().trim();
     if (searchTerm) {
         currentProducts = currentProducts.filter(product =>
@@ -397,6 +317,7 @@ function applyFiltersAndSort() {
         );
     }
 
+    // 2. Фильтрация по категории
     const selectedCategory = categorySelect.value;
     if (selectedCategory !== 'all') {
         currentProducts = currentProducts.filter(product =>
@@ -404,6 +325,7 @@ function applyFiltersAndSort() {
         );
     }
 
+    // 3. Сортировка
     const sortOption = sortSelect.value;
     switch (sortOption) {
         case 'price-asc':
@@ -420,7 +342,7 @@ function applyFiltersAndSort() {
             break;
     }
 
-    renderProducts(currentProducts);
+    renderProducts(currentProducts); // Отображаем отфильтрованные и отсортированные товары
 }
 
 // Обработчики событий для поля поиска, сортировки и категории
@@ -433,7 +355,7 @@ categorySelect.addEventListener('change', applyFiltersAndSort);
 orderForm.onsubmit = async e => {
     e.preventDefault();
     if (cart.length === 0) {
-        alert('Корзина пуста!');
+        alert('Корзина пуста!'); // Используем alert для критического сообщения
         return;
     }
 
@@ -442,26 +364,12 @@ orderForm.onsubmit = async e => {
     const address = document.getElementById('address').value.trim();
 
     if (!name || !phone || !address) {
-        alert('Пожалуйста, заполните все поля.');
+        alert('Пожалуйста, заполните все поля.'); // Используем alert для критического сообщения
         return;
     }
 
-    // >>>>> ИЗМЕНЕНИЕ: Получаем ID текущего авторизованного пользователя <<<<<
-    const { data: { user } } = await supabase.auth.getUser();
-    let userId = null;
-
-    if (user) {
-        userId = user.id;
-    } else {
-        const confirmGuest = confirm('Вы не вошли в систему. Хотите продолжить оформление заказа как гость? Если вы войдете, ваши заказы будут сохраняться в личном кабинете.');
-        if (!confirmGuest) {
-            alert('Пожалуйста, войдите или зарегистрируйтесь, чтобы оформить заказ.');
-            return;
-        }
-    }
-    // >>>>> КОНЕЦ ИЗМЕНЕНИЯ <<<<<
-
     const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    // Формируем текстовое описание товаров в заказе
     const productsText = cart.map(item => {
         const totalItemPrice = (item.price * item.qty);
         return `${item.name} ${item.price} ₸ х ${item.qty} ${item.unit || ''} = ${totalItemPrice} ₸`;
@@ -469,18 +377,8 @@ orderForm.onsubmit = async e => {
 
 
     messageDiv.textContent = 'Отправка заказа...';
-    // >>>>> ИЗМЕНЕНИЕ: Отправляем данные заказа в таблицу 'orders' Supabase, включая user_id <<<<<
-    const { error } = await supabase.from('orders').insert([
-        {
-            name,
-            phone,
-            address,
-            products: productsText,
-            total,
-            user_id: userId // <-- ПЕРЕДАЕМ ID ПОЛЬЗОВАТЕЛЯ
-        }
-    ]);
-    // >>>>> КОНЕЦ ИЗМЕНЕНИЯ <<<<<
+    // Отправляем данные заказа в таблицу 'orders' Supabase
+    const { error } = await supabase.from('orders').insert([{ name, phone, address, products: productsText, total }]);
 
     if (error) {
         messageDiv.style.color = 'red';
@@ -489,10 +387,11 @@ orderForm.onsubmit = async e => {
     } else {
         messageDiv.style.color = 'green';
         messageDiv.textContent = 'Заказ успешно отправлен! Спасибо.';
-        cart = [];
-        updateCartUI();
-        saveCartToLocalStorage();
-        orderForm.reset();
+        cart = []; // Очищаем корзину после успешного заказа
+        updateCartUI(); // Обновляем UI корзины (она станет пустой)
+        saveCartToLocalStorage(); // Очищаем корзину в localStorage
+        orderForm.reset(); // Очищаем поля формы
+        // Закрываем панель корзины и убираем сообщение через 3 секунды
         setTimeout(() => {
             messageDiv.textContent = '';
             cartPanel.classList.remove('open');
@@ -502,53 +401,53 @@ orderForm.onsubmit = async e => {
 
 // --- Инициализация приложения ---
 
+// Запускаем загрузку товаров при старте скрипта
 loadProducts();
 
+/// >>>>> ДОБАВЛЕННАЯ ФУНКЦИЯ showTemporaryMessage НАЧАЛО <<<<<
 // Функция для отображения временных сообщений в нижней части экрана
 function showTemporaryMessage(text, color = 'green', duration = 2000) {
     let tempMessageDiv = document.getElementById('temp-notification');
     if (!tempMessageDiv) {
+        // Если элемента еще нет, создаем его один раз
         tempMessageDiv = document.createElement('div');
         tempMessageDiv.id = 'temp-notification';
-        tempMessageDiv.style.position = 'fixed';
-        tempMessageDiv.style.bottom = '20px';
-        tempMessageDiv.style.left = '50%';
-        tempMessageDiv.style.transform = 'translateX(-50%)';
-        tempMessageDiv.style.background = '#333';
-        tempMessageDiv.style.color = 'white';
-        tempMessageDiv.style.padding = '10px 20px';
-        tempMessageDiv.style.borderRadius = '5px';
-        tempMessageDiv.style.zIndex = '10000';
-        tempMessageDiv.style.opacity = '0';
-        tempMessageDiv.style.transition = 'opacity 0.3s ease-in-out';
-        document.body.appendChild(tempMessageDiv);
+        // Базовые стили для позиционирования и внешнего вида
+        tempMessageDiv.style.position = 'fixed'; // Фиксируем на экране
+        tempMessageDiv.style.bottom = '20px';    // Отступ от низа
+        tempMessageDiv.style.left = '50%';       // Позиция по центру
+        tempMessageDiv.style.transform = 'translateX(-50%)'; // Точное центрирование
+        tempMessageDiv.style.background = '#333'; // Темный фон
+        tempMessageDiv.style.color = 'white';     // Белый текст
+        tempMessageDiv.style.padding = '10px 20px'; // Отступы текста
+        tempMessageDiv.style.borderRadius = '5px'; // Скругленные углы
+        tempMessageDiv.style.zIndex = '10000';    // Поверх всех других элементов
+        tempMessageDiv.style.opacity = '0';       // Изначально невидимый
+        tempMessageDiv.style.transition = 'opacity 0.3s ease-in-out'; // Плавное появление/исчезновение
+        document.body.appendChild(tempMessageDiv); // Добавляем в HTML
     }
 
-    tempMessageDiv.textContent = text;
-    tempMessageDiv.style.background = color === 'green' ? '#28a745' : '#ffc107';
-    tempMessageDiv.style.color = color === 'green' ? 'white' : '#333';
+    tempMessageDiv.textContent = text; // Устанавливаем текст сообщения
+    // Выбираем цвет фона в зависимости от типа сообщения
+    tempMessageDiv.style.background = color === 'green' ? '#28a745' : '#ffc107'; // Зеленый для успеха, оранжевый для предупреждения
+    tempMessageDiv.style.color = color === 'green' ? 'white' : '#333'; // Цвет текста
 
+    // Показываем сообщение (делаем видимым)
     tempMessageDiv.style.opacity = '1';
 
+    // Скрываем сообщение через заданное время (duration)
     setTimeout(() => {
-        tempMessageDiv.style.opacity = '0';
+        tempMessageDiv.style.opacity = '0'; // Плавно скрываем
+        // Очищаем текст после полного скрытия, чтобы не занимать место в DOM
         setTimeout(() => {
             tempMessageDiv.textContent = '';
-        }, 300);
-    }, duration);
+        }, 300); // Подождать, пока закончится анимация исчезновения (0.3s)
+    }, duration); // Время, через которое сообщение начнет исчезать
 }
-
-// --- ИНИЦИАЛИЗАЦИЯ И СЛУШАТЕЛИ ИЗМЕНЕНИЙ СТАТУСА АУТЕНТИФИКАЦИИ ---
-
-// Вызываем функцию обновления UI при загрузке страницы
-window.addEventListener('load', updateAuthUI);
-
-// Добавляем слушатель для изменения состояния аутентификации Supabase
-supabase.auth.onAuthStateChange((event, session) => {
-    updateAuthUI();
-});
+/// <<<<< ДОБАВЛЕННАЯ ФУНКЦИЯ showTemporaryMessage КОНЕЦ <<<<<
 
 // --- Регистрация Service Worker ---
+// Это важно для работы PWA (Progressive Web App) и оффлайн-функциональности
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
         .then(() => console.log('✅ Service Worker зарегистрирован'))
